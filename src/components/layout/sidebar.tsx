@@ -30,16 +30,16 @@ const menu = [
     link: "/",
   },
   {
-    id: "play",
-    title: "Play Quiz",
-    icon: <FaPlay />,
-    link: "/play",
-  },
-  {
     id: "create",
     title: "Create Quiz",
     icon: <IoIosCreate />,
     link: "/create",
+  },
+  {
+    id: "play",
+    title: "Play Quiz",
+    icon: <FaPlay />,
+    link: "/play",
   },
   {
     id: "saved",
