@@ -5,6 +5,9 @@ import type { ReactElement } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { IoGrid } from "react-icons/io5";
 import { RiSideBarFill } from "react-icons/ri";
+import { IoIosCreate } from "react-icons/io";
+import { FaPlay } from "react-icons/fa";
+import { BsFillSave2Fill } from "react-icons/bs";
 
 type Menu = {
   id: string;
@@ -25,6 +28,24 @@ const menu = [
     title: "Home",
     icon: <IoGrid />,
     link: "/",
+  },
+  {
+    id: "play",
+    title: "Play Quiz",
+    icon: <FaPlay />,
+    link: "/play",
+  },
+  {
+    id: "create",
+    title: "Create Quiz",
+    icon: <IoIosCreate />,
+    link: "/create",
+  },
+  {
+    id: "saved",
+    title: "Saved Quiz",
+    icon: <BsFillSave2Fill />,
+    link: "/saved",
   },
 ];
 

@@ -5,7 +5,9 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col px-10 py-14">Home</main>
+      <main className="flex min-h-screen flex-col px-10 py-14">
+        <h1 className="text-lg font-bold">Home</h1>
+      </main>
     </HydrateClient>
   );
 }
