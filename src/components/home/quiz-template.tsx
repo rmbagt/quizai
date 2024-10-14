@@ -49,7 +49,7 @@ export function QuizTemplate() {
               {quiz.totalQuestions} questions | {quiz.time} minutes
             </p>
           </div>
-          <Link href={`/create`}>
+          <Link href={`/create?prompt=${quiz.title}&time=${10}&question=${10}`}>
             <Button>Create Quiz</Button>
           </Link>
         </div>
