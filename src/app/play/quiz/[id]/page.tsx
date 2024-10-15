@@ -28,7 +28,7 @@ export default function QuizPage() {
   const router = useRouter()
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [userAnswers, setUserAnswers] = useState<string[]>(new Array(quizData.length).fill(''))
-  const [timeLeft, setTimeLeft] = useState(3000) // 5 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(300) // 5 minutes in seconds
 
   useEffect(() => {
     const timer = setInterval(() => {
