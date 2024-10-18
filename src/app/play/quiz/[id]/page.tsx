@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
@@ -13,6 +14,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "~/components/ui/dialog";
+import Link from "next/link";
 
 // Mock data for the quiz
 const quizData = [
@@ -31,12 +33,13 @@ const quizData = [
   // Add more questions as needed
 ];
 
-export default function QuizPage() {
+export default function QuizPage({ params }: { params: { id: string } }) {
+  const router = useRouter();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState<string[]>(
     new Array(quizData.length).fill(""),
   );
-  const [timeLeft, setTimeLeft] = useState(100); // 5 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
   const [isQuizEnded, setIsQuizEnded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<
@@ -74,7 +77,6 @@ export default function QuizPage() {
     setModalContent(reason);
     setShowModal(true);
     console.log("Unanswered questions:", unansweredQuestions);
-    // You can use this information to display in the review or send to a server
   };
 
   const handleAnswerChange = (answer: string) => {
@@ -104,10 +106,12 @@ export default function QuizPage() {
   };
 
   const handleReviewAnswers = () => {
-    // Implement the logic to review answers here
-    console.log("Reviewing answers...");
-    setShowModal(false);
-    // You would typically navigate to a review page or show a review component here
+    const quizResults = {
+      quizData: quizData,
+      userAnswers: userAnswers,
+    };
+    const queryString = `results=${encodeURIComponent(JSON.stringify(quizResults))}`;
+    router.push(`./${params.id}/result?${queryString}`);
   };
 
   const formatTime = (seconds: number) => {
@@ -222,9 +226,9 @@ export default function QuizPage() {
                 </p>
               )}
               <div className="flex justify-center">
-                <Button onClick={() => setShowModal(false)}>
-                  Review Answers
-                </Button>
+                {/* <Link href={`./${params.id}/result/`}> */}
+                  <Button onClick={handleReviewAnswers}>Review Answers</Button>
+                {/* </Link> */}
               </div>
             </div>
           )}
@@ -233,3 +237,5 @@ export default function QuizPage() {
     </div>
   );
 }
+
+// TODO: Replace the router.push() method with <Link> component on the Review Answers button
