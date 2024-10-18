@@ -36,7 +36,7 @@ export default function QuizPage() {
   const [userAnswers, setUserAnswers] = useState<string[]>(
     new Array(quizData.length).fill(""),
   );
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(100); // 5 minutes in seconds
   const [isQuizEnded, setIsQuizEnded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<
@@ -59,10 +59,22 @@ export default function QuizPage() {
     return () => clearInterval(timer);
   }, [isQuizEnded]);
 
+  const getUnansweredQuestions = () => {
+    return userAnswers.reduce((unanswered, answer, index) => {
+      if (answer === "") {
+        unanswered.push(index + 1);
+      }
+      return unanswered;
+    }, [] as number[]);
+  };
+
   const handleQuizEnd = (reason: "timeUp" | "completed") => {
     setIsQuizEnded(true);
+    const unansweredQuestions = getUnansweredQuestions();
     setModalContent(reason);
     setShowModal(true);
+    console.log("Unanswered questions:", unansweredQuestions);
+    // You can use this information to display in the review or send to a server
   };
 
   const handleAnswerChange = (answer: string) => {
@@ -89,6 +101,13 @@ export default function QuizPage() {
 
   const handleConfirmEnd = () => {
     handleQuizEnd("completed");
+  };
+
+  const handleReviewAnswers = () => {
+    // Implement the logic to review answers here
+    console.log("Reviewing answers...");
+    setShowModal(false);
+    // You would typically navigate to a review page or show a review component here
   };
 
   const formatTime = (seconds: number) => {
@@ -154,14 +173,27 @@ export default function QuizPage() {
         </div>
       </div>
 
-      <Dialog open={showModal} onOpenChange={modalContent === 'confirm' ? setShowModal : undefined}>
-        <DialogContent className="" showCloseButton={false}>
+      <Dialog
+        open={showModal}
+        onOpenChange={modalContent === "confirm" ? setShowModal : undefined}
+      >
+        <DialogContent className="sm:max-w-md" showCloseButton={false}>
           {modalContent === "confirm" ? (
             <>
               <DialogHeader>
                 <DialogTitle>Finish Quiz?</DialogTitle>
                 <DialogDescription>
                   Are you sure you want to finish the quiz?
+                  {getUnansweredQuestions().length > 0 && (
+                    <p className="mt-2 text-yellow-600">
+                      Warning: You have {getUnansweredQuestions().length}{" "}
+                      unanswered{" "}
+                      {getUnansweredQuestions().length === 1
+                        ? "question"
+                        : "questions"}
+                      .
+                    </p>
+                  )}
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
@@ -183,6 +215,12 @@ export default function QuizPage() {
                   ? "Let's review how well you did."
                   : "You did it! Let's see how well you did."}
               </p>
+              {getUnansweredQuestions().length > 0 && (
+                <p className="mb-4 text-center text-lg text-yellow-600">
+                  You left {getUnansweredQuestions().length} questions
+                  unanswered.
+                </p>
+              )}
               <div className="flex justify-center">
                 <Button onClick={() => setShowModal(false)}>
                   Review Answers
