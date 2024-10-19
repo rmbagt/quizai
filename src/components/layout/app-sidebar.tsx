@@ -33,23 +33,18 @@ import { Button } from "../ui/button";
 const items = [
   {
     title: "Home",
-    url: "/",
+    url: "/app/",
     icon: Home,
   },
   {
     title: "Create Quiz",
-    url: "/create",
+    url: "/app/create",
     icon: CirclePlus,
   },
   {
     title: "Saved Quiz",
-    url: "/quiz",
+    url: "/app/quiz",
     icon: Save,
-  },
-  {
-    title: "Play Quiz",
-    url: "/play",
-    icon: Play,
   },
 ];
 
@@ -101,7 +96,7 @@ export function AppSidebar({ session }: { session: Session | null }) {
                 className="flex w-[--radix-popper-anchor-width] flex-col gap-2 p-2"
               >
                 <DropdownMenuItem>
-                  <Link href="/profile">
+                  <Link href="/app/profile">
                     <div className="flex items-center gap-2">
                       <CircleUser />
                       <p className="text-[16px] font-semibold">Profile</p>
