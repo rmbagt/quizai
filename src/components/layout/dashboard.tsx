@@ -1,6 +1,6 @@
+import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
+import { AppSidebar } from "~/components/layout/app-sidebar";
 import { getServerAuthSession } from "~/server/auth";
-import Navbar from "./navbar";
-import Sidebar from "./sidebar";
 
 export default async function Dashboard({
   children,
@@ -10,12 +10,12 @@ export default async function Dashboard({
   const session = await getServerAuthSession();
 
   return (
-    <main className={`flex h-dvh w-full flex-col`}>
-      <Navbar session={session} />
-      <div className="relative flex h-full w-full overflow-auto">
-        <Sidebar />
-        <div className="w-full overflow-auto">{children}</div>
-      </div>
-    </main>
+    <SidebarProvider>
+      <AppSidebar session={session} />
+      <main className="w-full">
+        <SidebarTrigger className="m-4" />
+        {children}
+      </main>
+    </SidebarProvider>
   );
 }
