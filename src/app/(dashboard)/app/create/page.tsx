@@ -131,7 +131,7 @@ export default function CreateQuizPage() {
               <div className="flex flex-col justify-between gap-1">
                 <Label htmlFor="time">Time (in minutes)</Label>
                 <Input
-                  placeholder="30"
+                  placeholder="Ex: 30"
                   type="number"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
@@ -141,7 +141,7 @@ export default function CreateQuizPage() {
               <div className="flex flex-col justify-between gap-1">
                 <Label htmlFor="number-of-questions">Number of Questions</Label>
                 <Input
-                  placeholder="20"
+                  placeholder="Ex: 20"
                   type="number"
                   value={questionCount}
                   onChange={(e) => setQuestionCount(e.target.value)}
