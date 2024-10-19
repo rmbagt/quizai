@@ -5,7 +5,6 @@ import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/layout/theme-provider";
-import Dashboard from "~/components/layout/dashboard";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -30,7 +29,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Dashboard>{children}</Dashboard>
+            {children}
           </ThemeProvider>
         </TRPCReactProvider>
       </body>

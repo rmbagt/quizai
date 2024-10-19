@@ -32,7 +32,7 @@ export default async function Component() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <Link href={`/play/quiz/${quiz.id}`}>
+                  <Link href={`/app/quiz/${quiz.id}`}>
                     <Button className="w-full transition-transform duration-300 ease-in-out hover:scale-105">
                       Start Quiz
                     </Button>

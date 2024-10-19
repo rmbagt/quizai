@@ -43,13 +43,8 @@ const items = [
   },
   {
     title: "Saved Quiz",
-    url: "/quiz",
+    url: "/app/quiz",
     icon: Save,
-  },
-  {
-    title: "Play Quiz",
-    url: "/app/play",
-    icon: Play,
   },
 ];
 
