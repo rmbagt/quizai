@@ -63,6 +63,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    Quiz          Quiz[]
 }
 
 model VerificationToken {
@@ -74,9 +75,18 @@ model VerificationToken {
 }
 
 model Quiz {
+    id          String     @id @default(cuid())
+    theme       String
+    questions   Question[]
+    createdBy   User       @relation(fields: [createdById], references: [id])
+    createdById String
+}
+
+model Question {
     id       String   @id @default(cuid())
-    theme    String
-    question String[]
+    question String
     choices  String[]
     answer   Int
+    quiz     Quiz     @relation(fields: [quizId], references: [id])
+    quizId   String
 }

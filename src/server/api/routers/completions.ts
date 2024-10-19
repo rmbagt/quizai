@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { createOpenAI } from '@ai-sdk/openai';
-import { generateObject, streamObject } from "ai";
+import { generateObject } from "ai";
 
 const openai = createOpenAI({
     apiKey: process.env.OPEN_API_KEY,

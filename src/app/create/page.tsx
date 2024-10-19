@@ -15,6 +15,7 @@ import { QuizDisplay } from "~/components/create/quiz-display";
 export default function CreateQuizPage() {
   const searchParams = useSearchParams();
   const { mutateAsync, isPending } = api.completions.generateQuiz.useMutation();
+  const { mutateAsync: createQuiz } = api.quiz.createQuiz.useMutation();
 
   const [prompt, setPrompt] = useState("");
   const [time, setTime] = useState("");
@@ -79,9 +80,10 @@ export default function CreateQuizPage() {
     });
   };
 
-  const handleSubmitQuiz = () => {
+  const handleSubmitQuiz = async () => {
     // Here you would typically send the quizData to your backend
     console.log("Submitting quiz:", quizData);
+    await createQuiz(quizData);
     // You can add your API call here to save the quiz
   };
 
