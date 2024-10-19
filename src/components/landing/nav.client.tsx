@@ -29,7 +29,7 @@ export function MobileNav({
         <Menu />
       </Button>
       {isOpen && (
-        <div className="absolute left-0 right-0 top-16 mt-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="absolute left-0 right-0 top-16 mt-2 h-fit w-full border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           {items.map((item) => (
             <Link
               key={item.href}

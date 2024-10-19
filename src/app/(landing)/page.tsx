@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="absolute z-10 -mt-[56px] h-screen w-full bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-yellow-400/30 via-red-50/0 transition-colors dark:from-cyan-600/30 dark:via-red-50/0" />
+      <div className="absolute z-10 -mt-16 h-screen w-full bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-yellow-400/30 via-red-50/0 transition-colors dark:from-cyan-600/30 dark:via-red-50/0" />
       <div className="layout px-4 sm:px-6 lg:px-8">
         <section id="intro">
           <div className="-mt-[56px] flex min-h-screen w-full flex-col items-center justify-center gap-4 align-middle">

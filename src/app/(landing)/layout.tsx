@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={cn(
-        "min-h-screen scroll-smooth bg-background font-sans antialiased",
+        "min-h-svh scroll-smooth bg-background font-sans antialiased",
         fontSans.variable,
       )}
     >
