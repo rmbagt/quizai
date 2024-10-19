@@ -11,11 +11,11 @@ export async function SiteHeader() {
   const session = await getServerAuthSession();
   return (
     <header className="sticky top-0 z-50 flex w-full justify-center border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between p-4">
         <MainNav />
         {/* <MobileNav /> */}
-        <div className="flex items-center justify-between space-x-2 md:justify-end">
-          <nav className="flex items-center gap-2">
+        <div className="flex w-full items-center justify-between gap-2 md:justify-end">
+          <div className="flex items-center gap-2">
             <Link
               href="https://github.com/reynaldomarchell/srifoton-hack"
               target="_blank"
@@ -26,10 +26,10 @@ export async function SiteHeader() {
               </Button>
               <span className="sr-only">GitHub</span>
             </Link>
-
             <ModeToggle />
-            <SignIn session={session} />
-          </nav>
+          </div>
+
+          <SignIn session={session} />
         </div>
       </div>
     </header>
