@@ -3,6 +3,8 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
 
 export default function CreateQuizPage() {
   const router = useRouter();
@@ -35,33 +37,43 @@ export default function CreateQuizPage() {
       <div className="rounded-md border-2 p-4 shadow-sm">
         <h1 className="text-lg font-bold">Create a New Quiz</h1>
         <div className="mt-4 flex flex-col gap-4">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            htmlFor="prompt"
+          >
             Tell me about your quiz
           </label>
-          <input
-            type="text"
+          <Textarea
+            placeholder="Calculus quiz that covers derivatives and integrals"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            className="rounded-md border p-2"
+            id="prompt"
           />
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            htmlFor="time"
+          >
             Time (in minutes)
           </label>
-          <input
+          <Input
+            placeholder="30"
             type="number"
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="rounded-md border p-2"
+            id="time"
           />
-
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            htmlFor="number-of-questions"
+          >
             Number of Questions
           </label>
-          <input
+          <Input
+            placeholder="20"
             type="number"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            className="rounded-md border p-2"
+            id="number-of-questions"
           />
 
           <Button onClick={handleCreateQuiz} className="rounded-md p-2">
