@@ -37,7 +37,7 @@ export default async function Component() {
                       Start Quiz
                     </Button>
                   </Link>
-                  <Link href={`/review/quiz/${quiz.id}`}>
+                  <Link href={`/app/quiz/${quiz.id}?mode=review`}>
                     <Button className="w-full transition-transform duration-300 ease-in-out hover:scale-105">
                       Review
                     </Button>

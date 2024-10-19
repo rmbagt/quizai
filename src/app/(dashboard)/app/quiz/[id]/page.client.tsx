@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -17,33 +18,48 @@ import type { Question, Quiz } from "@prisma/client";
 
 export default function QuizPage({
   quizData,
+  userAnswers: initialUserAnswers,
 }: {
   quizData: ({ questions: Question[] } & Quiz) | null;
+  userAnswers?: number[];
 }) {
+  const searchParams = useSearchParams();
+  const isReviewMode = searchParams.get("mode") === "review";
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [isQuizEnded, setIsQuizEnded] = useState(false);
+  const [isQuizEnded, setIsQuizEnded] = useState(isReviewMode);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<
     "timeUp" | "confirm" | "completed"
   >("timeUp");
-  const [showResults, setShowResults] = useState(false);
+  const [showResults, setShowResults] = useState(isReviewMode);
   const [score, setScore] = useState(0);
   const resultRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     if (quizData) {
       setTimeLeft(quizData.workingTime * 60); // Convert minutes to seconds
-      setUserAnswers(new Array(quizData.totalQuestions).fill(-1));
+      setUserAnswers(
+        initialUserAnswers ?? new Array(quizData.totalQuestions).fill(-1),
+      );
       resultRefs.current = new Array<HTMLDivElement | null>(
         quizData.totalQuestions,
       ).fill(null);
+
+      if (isReviewMode) {
+        const userScore =
+          initialUserAnswers?.reduce((acc, answer, index) => {
+            return acc + (answer === quizData.questions[index]?.answer ? 1 : 0);
+          }, 0) ?? 0;
+        setScore(userScore);
+      }
     }
-  }, [quizData]);
+  }, [quizData, initialUserAnswers, isReviewMode]);
 
   useEffect(() => {
-    if (isQuizEnded || !quizData) return;
+    if (isQuizEnded || !quizData || isReviewMode) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
@@ -56,8 +72,7 @@ export default function QuizPage({
     }, 1000);
 
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isQuizEnded, quizData]);
+  }, [isQuizEnded, quizData, isReviewMode]);
 
   const handleQuizEnd = (reason: "timeUp" | "completed") => {
     setIsQuizEnded(true);
@@ -72,22 +87,22 @@ export default function QuizPage({
   };
 
   const handleAnswerChange = (answer: number) => {
-    if (isQuizEnded || !quizData) return;
+    if (isQuizEnded || !quizData || isReviewMode) return;
     const newAnswers = [...userAnswers];
     newAnswers[currentQuestion] = answer;
     setUserAnswers(newAnswers);
   };
 
   const handlePrevious = () => {
-    if (isQuizEnded) return;
+    if (isQuizEnded && !isReviewMode) return;
     setCurrentQuestion((prev) => (prev > 0 ? prev - 1 : prev));
   };
 
   const handleNext = () => {
-    if (isQuizEnded || !quizData) return;
+    if ((isQuizEnded && !isReviewMode) || !quizData) return;
     if (currentQuestion < quizData.totalQuestions - 1) {
       setCurrentQuestion((prev) => prev + 1);
-    } else {
+    } else if (!isReviewMode) {
       setModalContent("confirm");
       setShowModal(true);
     }
@@ -123,9 +138,11 @@ export default function QuizPage({
           <>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-2xl font-bold">No.{currentQuestion + 1}</h2>
-              <div className="text-xl font-semibold">
-                {formatTime(timeLeft)}
-              </div>
+              {!isReviewMode && (
+                <div className="text-xl font-semibold">
+                  {formatTime(timeLeft)}
+                </div>
+              )}
             </div>
             <Card className="mb-6">
               <CardContent className="p-6">
@@ -145,7 +162,7 @@ export default function QuizPage({
                         <RadioGroupItem
                           value={index.toString()}
                           id={`answer-${index}`}
-                          disabled={isQuizEnded}
+                          disabled={isQuizEnded || isReviewMode}
                         />
                         <Label htmlFor={`answer-${index}`}>{choice}</Label>
                       </div>
@@ -157,11 +174,14 @@ export default function QuizPage({
             <div className="flex justify-between">
               <Button
                 onClick={handlePrevious}
-                disabled={currentQuestion === 0 || isQuizEnded}
+                disabled={currentQuestion === 0 && !isReviewMode}
               >
                 Previous
               </Button>
-              <Button onClick={handleNext} disabled={isQuizEnded}>
+              <Button
+                onClick={handleNext}
+                disabled={isQuizEnded && !isReviewMode}
+              >
                 {currentQuestion === quizData.totalQuestions - 1
                   ? "Finish"
                   : "Next"}
@@ -236,10 +256,10 @@ export default function QuizPage({
                     ? scrollToQuestion(index)
                     : setCurrentQuestion(index)
                 }
-                disabled={isQuizEnded && !showResults}
+                disabled={isQuizEnded && !showResults && !isReviewMode}
                 className={`${
                   userAnswers[index] !== -1
-                    ? showResults
+                    ? showResults || isReviewMode
                       ? userAnswers[index] === quizData.questions[index]?.answer
                         ? "bg-green-500 hover:bg-green-600"
                         : "bg-red-500 hover:bg-red-600"
