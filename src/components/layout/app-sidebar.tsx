@@ -101,7 +101,7 @@ export function AppSidebar({ session }: { session: Session | null }) {
                 className="flex w-[--radix-popper-anchor-width] flex-col gap-2 p-2"
               >
                 <DropdownMenuItem>
-                  <Link href="/profile">
+                  <Link href="/app/profile">
                     <div className="flex items-center gap-2">
                       <CircleUser />
                       <p className="text-[16px] font-semibold">Profile</p>

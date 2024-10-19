@@ -6,7 +6,6 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/layout/theme-provider";
 import Dashboard from "~/components/layout/dashboard";
-import SessionClientProvider from "~/components/layout/SessionClientProvider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
