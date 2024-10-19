@@ -5,7 +5,7 @@ export default async function Quiz({ params }: { params: { id: string } }) {
   const data = await api.quiz.getQuiz({ id: params.id });
   return (
     <div>
-      <QuizPage quizData={data} />
+      <QuizPage className="top-14" quizData={data} />
     </div>
   );
 }

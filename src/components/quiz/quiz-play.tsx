@@ -24,11 +24,14 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import type { Question, Quiz } from "@prisma/client";
+import { cn } from "~/lib/utils";
 
 export default function QuizPage({
   quizData,
+  className,
   userAnswers: initialUserAnswers,
 }: {
+  className?: string;
   quizData: ({ questions: Question[] } & Quiz) | null;
   userAnswers?: number[];
 }) {
@@ -146,11 +149,14 @@ export default function QuizPage({
 
   const QuestionNavigation = ({ isMobile = false }) => (
     <div
-      className={`${
-        isMobile
-          ? ""
-          : "sticky top-0 h-svh w-64 overflow-y-auto bg-secondary p-4"
-      }`}
+      className={cn(
+        `${
+          isMobile
+            ? ""
+            : "sticky top-0 h-svh w-64 overflow-y-auto bg-secondary p-4"
+        }`,
+        className,
+      )}
     >
       <h3 className="mb-4 text-xl font-bold">All Questions</h3>
       <span className={isMobile ? "hidden" : "mb-4 block text-balance text-sm"}>
@@ -187,9 +193,9 @@ export default function QuizPage({
   );
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row">
+    <div className="flex min-h-[calc(100svh-24rem)] flex-col lg:flex-row">
       <div className="flex flex-1 flex-col">
-        <div className="sticky top-0">
+        <div className={cn("sticky top-0", className)}>
           <div className="flex items-center justify-between bg-secondary p-4">
             <h2 className="text-xl font-bold">Quiz</h2>
             {!isReviewMode && (
