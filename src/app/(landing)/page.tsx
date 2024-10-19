@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="absolute z-20 -mt-[56px] h-screen w-full bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-yellow-400/30 via-red-50/0 transition-colors dark:from-cyan-600/30 dark:via-red-50/0" />
+      <div className="absolute z-10 -mt-[56px] h-screen w-full bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-yellow-400/30 via-red-50/0 transition-colors dark:from-cyan-600/30 dark:via-red-50/0" />
       <div className="layout px-4 sm:px-6 lg:px-8">
         <section id="intro">
           <div className="-mt-[56px] flex min-h-screen w-full flex-col items-center justify-center gap-4 align-middle">
@@ -37,7 +37,7 @@ export default function Home() {
               personalized learning experiences.
             </p>
 
-            <div className="flex h-20 items-center justify-center align-middle">
+            <div className="z-20 flex h-20 items-center justify-center align-middle">
               <div className="flex gap-2">
                 <Link href="/app">
                   <Button
@@ -50,7 +50,7 @@ export default function Home() {
               </div>
             </div>
 
-            <p className="text-sm text-muted-foreground sm:text-base">
+            <p className="z-20 text-sm text-muted-foreground sm:text-base">
               Lihat bagaimana proses kami
               <Link href="#about">
                 <FaArrowDown className="ml-1 inline-block animate-bounce" />
