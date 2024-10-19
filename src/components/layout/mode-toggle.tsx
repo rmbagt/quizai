@@ -1,18 +1,27 @@
 "use client";
 
-import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
+import { useEffect, useState } from "react";
 
 export function ModeToggle() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   const isDarkMode = theme === "dark";
 
@@ -20,7 +29,7 @@ export function ModeToggle() {
     <div className="flex h-full items-center justify-center space-x-2">
       <Switch
         id="theme-toggle"
-        checked={theme === "dark"}
+        checked={isDarkMode}
         onCheckedChange={toggleTheme}
         className="data-[state=checked]:bg-primary"
       />

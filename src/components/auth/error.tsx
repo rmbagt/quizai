@@ -19,7 +19,7 @@ export function ErrorLoginMessage() {
 
   return (
     error && (
-      <Card className="w-full border-red-400 bg-red-500/30">
+      <Card className="my-4 w-full border-red-400 bg-red-500/30">
         <CardHeader className="p-3">
           <CardTitle className="text-lg">Error</CardTitle>
           <CardDescription className="text-balance">{message}</CardDescription>
