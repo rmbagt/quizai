@@ -24,11 +24,14 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import type { Question, Quiz } from "@prisma/client";
+import { cn } from "~/lib/utils";
 
 export default function QuizPage({
   quizData,
+  className,
   userAnswers: initialUserAnswers,
 }: {
+  className?: string;
   quizData: ({ questions: Question[] } & Quiz) | null;
   userAnswers?: number[];
 }) {
@@ -146,11 +149,14 @@ export default function QuizPage({
 
   const QuestionNavigation = ({ isMobile = false }) => (
     <div
-      className={`${
-        isMobile
-          ? ""
-          : "sticky top-0 h-svh w-64 overflow-y-auto bg-secondary p-4"
-      }`}
+      className={cn(
+        `${
+          isMobile
+            ? ""
+            : "sticky top-0 h-svh w-64 overflow-y-auto bg-secondary p-4"
+        }`,
+        className,
+      )}
     >
       <h3 className="mb-4 text-xl font-bold">All Questions</h3>
       <span className={isMobile ? "hidden" : "mb-4 block text-balance text-sm"}>
@@ -187,39 +193,42 @@ export default function QuizPage({
   );
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row">
+    <div className="flex min-h-[calc(100svh-24rem)] flex-col lg:flex-row">
       <div className="flex flex-1 flex-col">
-        <div className="flex items-center justify-between bg-secondary p-4">
-          <h2 className="text-xl font-bold">Quiz</h2>
-          {!isReviewMode && (
-            <div className="text-lg font-semibold">{formatTime(timeLeft)}</div>
-          )}
-          <div className="lg:hidden">
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="h-4 w-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right">
-                <SheetHeader>
-                  <SheetTitle>All Questions</SheetTitle>
-                  <SheetDescription>
-                    Navigate to any question or check your progress
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="mt-4">
-                  <QuestionNavigation isMobile={true} />
-                </div>
-              </SheetContent>
-            </Sheet>
+        <div className={cn("sticky top-0", className)}>
+          <div className="flex items-center justify-between bg-secondary p-4">
+            <h2 className="text-xl font-bold">Quiz</h2>
+            {!isReviewMode && (
+              <div className="text-lg font-semibold">
+                {formatTime(timeLeft)}
+              </div>
+            )}
+            <div className="lg:hidden">
+              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="h-4 w-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right">
+                  <SheetHeader>
+                    <SheetTitle>All Questions</SheetTitle>
+                    <SheetDescription>
+                      Navigate to any question or check your progress
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-4">
+                    <QuestionNavigation isMobile={true} />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
+          <Progress
+            value={progressPercentage}
+            className="h-2 w-full rounded-none"
+          />
         </div>
-
-        <Progress
-          value={progressPercentage}
-          className="h-2 w-full rounded-none"
-        />
 
         <div className="flex-grow overflow-y-auto p-4 md:p-8">
           {!showResults ? (
@@ -338,7 +347,7 @@ export default function QuizPage({
         open={showModal}
         onOpenChange={modalContent === "confirm" ? setShowModal : undefined}
       >
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="max-w-sm rounded-md">
           {modalContent === "confirm" ? (
             <>
               <DialogHeader>
