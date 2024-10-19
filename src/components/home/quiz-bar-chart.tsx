@@ -35,7 +35,7 @@ const data = [
 
 export function QuizBarChart() {
   return (
-    <div className="flex flex-col justify-between gap-2 rounded-md border p-4 md:w-1/2">
+    <div className="flex flex-col justify-between gap-2 rounded-md border p-4 lg:w-1/2">
       <div className="flex flex-col gap-1">
         <h2 className="text-lg font-bold">Activities</h2>
         <p className="text-sm font-medium text-gray-400">
