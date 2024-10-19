@@ -23,6 +23,7 @@ export default function CreateQuizPage() {
   const [quizData, setQuizData] = useState<QuizData>({
     theme: "",
     questions: [],
+    workingTime: Number(time),
   });
 
   useEffect(() => {
@@ -37,7 +38,10 @@ export default function CreateQuizPage() {
       totalQuestions: Number(questionCount),
     });
 
-    setQuizData(res.object);
+    setQuizData({
+      ...res.object,
+      workingTime: Number(time),
+    });
   };
 
   const handleQuestionChange = (index: number, newQuestion: string) => {

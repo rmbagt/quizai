@@ -7,6 +7,7 @@ export const quizRouter = createTRPCRouter({
         .input(
             z.object({
                 theme: z.string().min(1),
+                workingTime: z.number().min(1),
                 questions: z.array(
                     z.object({
                         question: z.string().min(1),
@@ -17,11 +18,13 @@ export const quizRouter = createTRPCRouter({
             })
         )
         .mutation(async ({ ctx, input }) => {
-            const { theme, questions } = input;
+            const { theme, questions, workingTime } = input;
             return ctx.db.quiz.create({
                 data: {
                     theme,
                     createdBy: { connect: { id: ctx.session.user.id } },
+                    totalQuestions: questions.length,
+                    workingTime,
                     questions: {
                         create: questions.map((q) => ({
                             question: q.question,
@@ -50,7 +53,6 @@ export const quizRouter = createTRPCRouter({
     getAllQuizzes: protectedProcedure.query(async ({ ctx }) => {
         return ctx.db.quiz.findMany({
             where: { createdById: ctx.session.user.id }, // Restrict to user's own quizzes
-            include: { questions: true },
         });
     }),
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateObject } from "ai";
 
@@ -9,7 +9,7 @@ const openai = createOpenAI({
 });
 
 export const completionsRouter = createTRPCRouter({
-    generateQuiz: publicProcedure
+    generateQuiz: protectedProcedure
         .input(z.object({
             topic: z.string(),
             totalQuestions: z.number()

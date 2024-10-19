@@ -7,5 +7,6 @@ export interface QuizQuestion {
 export interface QuizData {
     theme: string;
     questions: QuizQuestion[];
+    workingTime: number;
 }
 

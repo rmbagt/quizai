@@ -29,7 +29,7 @@ export default function QuizPage() {
         </div>
         <div className="flex items-center gap-4">
           <Link
-            href={`/play/quiz/${id}`}
+            href={`/play/quiz/${quiz?.id}`}
             className={buttonVariants({ variant: "default" })}
           >
             Start
