@@ -1,11 +1,4 @@
-import {
-  Home,
-  CirclePlus,
-  Play,
-  ChevronUp,
-  CircleUser,
-  Save,
-} from "lucide-react";
+import { Home, CirclePlus, ChevronUp, CircleUser, Save } from "lucide-react";
 import Link from "next/link";
 
 import {

@@ -36,7 +36,9 @@ export default function QuizPage({
     if (quizData) {
       setTimeLeft(quizData.workingTime * 60); // Convert minutes to seconds
       setUserAnswers(new Array(quizData.totalQuestions).fill(-1));
-      resultRefs.current = new Array(quizData.totalQuestions).fill(null);
+      resultRefs.current = new Array<HTMLDivElement | null>(
+        quizData.totalQuestions,
+      ).fill(null);
     }
   }, [quizData]);
 
@@ -54,6 +56,7 @@ export default function QuizPage({
     }, 1000);
 
     return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isQuizEnded, quizData]);
 
   const handleQuizEnd = (reason: "timeUp" | "completed") => {
@@ -176,7 +179,9 @@ export default function QuizPage({
               <Card
                 key={index}
                 className="p-6"
-                ref={(el) => (resultRefs.current[index] = el)}
+                ref={(el) => {
+                  resultRefs.current[index] = el;
+                }}
               >
                 <h3 className="mb-4 text-xl font-semibold">
                   Question {index + 1}: {question.question}

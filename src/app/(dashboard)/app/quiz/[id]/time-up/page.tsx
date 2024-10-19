@@ -8,10 +8,10 @@ export default function QuizResults() {
       <Card className="w-full max-w-md">
         <CardContent className="p-6">
           <h1 className="mb-4 text-center text-2xl font-bold">
-            Welp, time's up!
+            Welp, time&apos;s up!
           </h1>
           <p className="mb-6 text-center text-lg">
-            Let's review how well you did.
+            Let&apos;s review how well you did.
           </p>
           <div className="flex justify-center">
             <Link href="/app/quiz-review">

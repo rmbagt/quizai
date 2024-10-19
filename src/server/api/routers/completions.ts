@@ -2,9 +2,10 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateObject } from "ai";
+import { env } from "~/env";
 
 const openai = createOpenAI({
-    apiKey: process.env.OPEN_API_KEY,
+    apiKey: env.OPEN_API_KEY,
     compatibility: 'strict', // strict mode, enable when using the OpenAI API
 });
 
