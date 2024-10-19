@@ -18,7 +18,7 @@ export default function MemberCard({
   return (
     <div className="flex flex-row items-center gap-4 align-middle">
       <Avatar className="h-24 w-24 text-4xl font-extrabold">
-        <AvatarImage src={avatarSrc} />
+        <AvatarImage src={avatarSrc} className="object-cover object-center" />
         <AvatarFallback>{avatarFallback}</AvatarFallback>
       </Avatar>
       <div>
