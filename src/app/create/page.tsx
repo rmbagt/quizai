@@ -1,36 +1,50 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { api } from "~/trpc/react";
+
+interface QuizQuestion {
+  question: string;
+  choices: string[];
+  answer: number;
+}
+
+interface QuizData {
+  theme: string;
+  questions: QuizQuestion[];
+}
 
 export default function CreateQuizPage() {
-  const router = useRouter();
-  const pathname = useSearchParams();
+  // const router = useRouter();
+  const searchParams = useSearchParams();
+  const { mutateAsync, isPending } = api.completions.generateQuiz.useMutation();
 
   const [prompt, setPrompt] = useState("");
   const [time, setTime] = useState("");
-  const [question, setQuestion] = useState("");
+  const [questionCount, setQuestionCount] = useState("");
+  const [quizData, setQuizData] = useState<QuizData>({
+    theme: "",
+    questions: [],
+  });
 
   useEffect(() => {
-    if (pathname.get("prompt")) {
-      setPrompt(pathname.get("prompt") ?? "");
-    }
+    setPrompt(searchParams.get("prompt") ?? "");
+    setTime(searchParams.get("time") ?? "");
+    setQuestionCount(searchParams.get("question") ?? "");
+  }, [searchParams]);
 
-    if (pathname.get("time")) {
-      setTime(pathname.get("time") ?? "");
-    }
+  const handleCreateQuiz = async () => {
+    const res = await mutateAsync({
+      topic: prompt,
+      totalQuestions: Number(questionCount),
+    });
 
-    if (pathname.get("question")) {
-      setQuestion(pathname.get("question") ?? "");
-    }
-  }, [pathname]);
-
-  function handleCreateQuiz() {
-    router.push(`/quiz/1`);
-  }
+    setQuizData(res.object);
+  };
 
   return (
     <div className="flex min-h-screen flex-col px-10 py-14 md:px-32">
@@ -71,16 +85,29 @@ export default function CreateQuizPage() {
           <Input
             placeholder="20"
             type="number"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            value={questionCount}
+            onChange={(e) => setQuestionCount(e.target.value)}
             id="number-of-questions"
           />
 
-          <Button onClick={handleCreateQuiz} className="rounded-md p-2">
-            Create Quiz
+          <Button
+            onClick={handleCreateQuiz}
+            className="rounded-md p-2"
+            disabled={isPending}
+          >
+            {isPending ? "Generating..." : "Create Quiz"}
           </Button>
         </div>
       </div>
+
+      {quizData && (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold">Generated Quiz</h2>
+          <pre className="mt-4 whitespace-pre-wrap">
+            {JSON.stringify(quizData, null, 2)}
+          </pre>
+        </div>
+      )}
     </div>
   );
 }

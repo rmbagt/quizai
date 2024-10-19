@@ -1,6 +1,6 @@
 import { QuizBarChart } from "~/components/home/quiz-bar-chart";
 import QuizCard from "~/components/home/quiz-card";
-import { HydrateClient } from "~/trpc/server";
+import { api, HydrateClient } from "~/trpc/server";
 import { QuizPieChart } from "~/components/home/quiz-pie-chart";
 import { QuizTemplate } from "~/components/home/quiz-template";
 
