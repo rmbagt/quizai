@@ -44,22 +44,15 @@ export default async function LoginPage() {
               <p className="mb-4 text-4xl font-bold text-foreground">
                 Welcome back!
               </p>
-              <Suspense>
-                <ErrorLoginMessage />
-              </Suspense>
-              <div className="flex w-full flex-col">
+              <div className="flex w-full flex-col gap-2">
                 {providers &&
                   Object.values(providers).map((provider) => (
                     <SignInButton key={provider.name} provider={provider} />
                   ))}
               </div>
-
-              <div className="flex gap-2">
-                <p className="text-sm">Don&apos;t have an account?</p>
-                <Link href="#" className="text-sm text-[#D36A7B]">
-                  Register
-                </Link>
-              </div>
+              <Suspense>
+                <ErrorLoginMessage />
+              </Suspense>
             </div>
             <div className="relative top-[25%] flex flex-col items-center">
               <div className="flex">

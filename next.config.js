@@ -10,6 +10,9 @@ const config = {
         remotePatterns: [
             {
                 hostname: 'cdn.discordapp.com'
+            },
+            {
+                hostname: 'lh3.googleusercontent.com'
             }
         ]
     }

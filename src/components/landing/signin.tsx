@@ -2,8 +2,8 @@
 
 import { LogIn } from "lucide-react";
 import { Button } from "../ui/button";
-import { signIn, useSession } from "next-auth/react";
-import { Session } from "next-auth";
+import { signIn } from "next-auth/react";
+import type { Session } from "next-auth";
 import Link from "next/link";
 
 export function SignIn({ session }: { session: Session | null }) {
