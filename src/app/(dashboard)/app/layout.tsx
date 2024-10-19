@@ -16,7 +16,7 @@ export default async function Layout({
 
   return (
     <SidebarProvider>
-      <AppSidebar session={session} />
+      <AppSidebar session={session} props={{}} />
       <main className="w-full">
         <SidebarTrigger className="absolute m-4" />
         {children}

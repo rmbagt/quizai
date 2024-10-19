@@ -1,114 +1,71 @@
-import { Home, CirclePlus, ChevronUp, CircleUser, Save } from "lucide-react";
-import Link from "next/link";
+"use client";
+
+import * as React from "react";
+import { CirclePlus, Home, Save } from "lucide-react";
+import { NavMain } from "~/components/layout/nav-main";
+import { NavUser } from "~/components/layout/nav-user";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarRail,
 } from "~/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import Image from "next/image";
 import type { Session } from "next-auth";
-import { Button } from "../ui/button";
 
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "/app/",
-    icon: Home,
+// This is sample data.
+const data = {
+  user: {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
   },
-  {
-    title: "Create Quiz",
-    url: "/app/create",
-    icon: CirclePlus,
-  },
-  {
-    title: "Saved Quiz",
-    url: "/app/quiz",
-    icon: Save,
-  },
-];
+  navMain: [
+    {
+      title: "Home",
+      url: "/app/",
+      icon: Home,
+      isActive: true,
+    },
+    {
+      title: "Create Quiz",
+      url: "/app/create",
+      icon: CirclePlus,
+      isActive: true,
+    },
+    {
+      title: "Saved Quiz",
+      url: "/app/quiz",
+      icon: Save,
+      isActive: true,
+    },
+  ],
+};
 
-export function AppSidebar({ session }: { session: Session | null }) {
+export function AppSidebar({
+  session,
+  ...props
+}: {
+  props?: React.ComponentProps<typeof Sidebar>;
+  session?: Session | null;
+}) {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Logo</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url} className="text-lg font-semibold">
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={session?.user?.image ?? ""}
-                      alt="profile"
-                      className="h-[24px] w-[24px] overflow-hidden rounded-full"
-                      width={24}
-                      height={24}
-                    />
-                    <p className="text-[16px] font-semibold">
-                      {session?.user?.name}
-                    </p>
-                  </div>
-                  <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="flex w-[--radix-popper-anchor-width] flex-col gap-2 p-2"
-              >
-                <DropdownMenuItem>
-                  <Link href="/app/profile">
-                    <div className="flex items-center gap-2">
-                      <CircleUser />
-                      <p className="text-[16px] font-semibold">Profile</p>
-                    </div>
-                  </Link>
-                </DropdownMenuItem>
-
-                <Link href={session ? "/api/auth/signout" : "/api/auth/signin"}>
-                  <div>
-                    <Button className="w-full">
-                      {session ? "Sign Out" : "Sign In"}
-                    </Button>
-                  </div>
-                </Link>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        {session?.user && (
+          <NavUser
+            user={{
+              name: session.user.name ?? "Unknown",
+              email: session.user.email ?? "Unknown",
+              image: session.user.image ?? "/default-avatar.jpg",
+            }}
+          />
+        )}
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }
