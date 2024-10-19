@@ -197,7 +197,7 @@ export default function QuizPage({
       <div className="flex flex-1 flex-col">
         <div className={cn("sticky top-0", className)}>
           <div className="flex items-center justify-between bg-secondary p-4">
-            <h2 className="text-xl font-bold">Quiz</h2>
+            <h2 className="ml-8 text-xl font-bold">Quiz</h2>
             {!isReviewMode && (
               <div className="text-lg font-semibold">
                 {formatTime(timeLeft)}
@@ -206,8 +206,8 @@ export default function QuizPage({
             <div className="lg:hidden">
               <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <Menu className="h-4 w-4" />
+                  <Button variant="outline" className="size-7" size="icon">
+                    <Menu className="size-2" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right">
