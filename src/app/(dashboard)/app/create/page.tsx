@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "~/trpc/react";
@@ -108,44 +107,48 @@ export default function CreateQuizPage() {
   };
 
   const handleSubmitQuiz = async () => {
-    // Here you would typically send the quizData to your backend
     console.log("Submitting quiz:", quizData);
     await createQuiz(quizData);
-    // You can add your API call here to save the quiz
   };
 
   return (
-    <div className="flex min-h-screen flex-col px-4 py-8 md:px-8 lg:px-16">
-      <Card className="mb-8">
+    <div className="flex min-h-screen flex-col items-center px-10 py-14 md:px-24">
+      <h1 className="mb-8 text-4xl font-bold">What you want to practice?</h1>
+      <Card className="w-full max-w-3xl">
         <CardHeader>
-          <CardTitle>Create a New Quiz</CardTitle>
+          <CardTitle className="text-2xl">Create a New Quiz</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4">
-            <Label htmlFor="prompt">Tell me about your quiz</Label>
-            <Textarea
-              placeholder="Calculus quiz that covers derivatives and integrals"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              id="prompt"
-            />
-            <Label htmlFor="time">Time (in minutes)</Label>
-            <Input
-              placeholder="30"
-              type="number"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              id="time"
-            />
-            <Label htmlFor="number-of-questions">Number of Questions</Label>
-            <Input
-              placeholder="20"
-              type="number"
-              value={questionCount}
-              onChange={(e) => setQuestionCount(e.target.value)}
-              id="number-of-questions"
-            />
-
+            <div className="relative">
+              <Textarea
+                placeholder="Tell me about your quiz..."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col justify-between gap-1">
+                <Label htmlFor="time">Time (in minutes)</Label>
+                <Input
+                  placeholder="30"
+                  type="number"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  id="time"
+                />
+              </div>
+              <div className="flex flex-col justify-between gap-1">
+                <Label htmlFor="number-of-questions">Number of Questions</Label>
+                <Input
+                  placeholder="20"
+                  type="number"
+                  value={questionCount}
+                  onChange={(e) => setQuestionCount(e.target.value)}
+                  id="number-of-questions"
+                />
+              </div>
+            </div>
             <Button onClick={handleCreateQuiz} disabled={isPending}>
               {isPending ? "Generating..." : "Create Quiz"}
             </Button>
@@ -154,7 +157,7 @@ export default function CreateQuizPage() {
       </Card>
 
       {quizData.questions.length > 0 && (
-        <div className="mt-8">
+        <div className="mt-8 w-full max-w-3xl">
           <h2 className="mb-4 text-2xl font-bold">Edit Quiz Questions</h2>
           {quizData.questions.map((question, questionIndex) => (
             <QuizDisplay
