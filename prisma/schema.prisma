@@ -63,6 +63,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    Quiz          Quiz[]
 }
 
 model VerificationToken {
@@ -71,4 +72,23 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Quiz {
+    id             String     @id @default(cuid())
+    theme          String
+    totalQuestions Int
+    workingTime    Int
+    questions      Question[]
+    createdBy      User       @relation(fields: [createdById], references: [id])
+    createdById    String
+}
+
+model Question {
+    id       String   @id @default(cuid())
+    question String
+    choices  String[]
+    answer   Int
+    quiz     Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+    quizId   String
 }

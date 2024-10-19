@@ -5,7 +5,7 @@ import { RiFilePaper2Fill } from "react-icons/ri";
 
 export default function QuizCard() {
   return (
-    <div className="flex items-center justify-between gap-4 md:flex-col">
+    <div className="flex items-center justify-between gap-4 lg:flex-col">
       <Card className="w-44">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">New Quiz</CardTitle>

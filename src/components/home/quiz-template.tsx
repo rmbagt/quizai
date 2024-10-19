@@ -49,7 +49,9 @@ export function QuizTemplate() {
               {quiz.totalQuestions} questions | {quiz.time} minutes
             </p>
           </div>
-          <Link href={`/create?prompt=${quiz.title}&time=${10}&question=${10}`}>
+          <Link
+            href={`/app/create?prompt=${quiz.title}&time=${10}&question=${10}`}
+          >
             <Button>Create Quiz</Button>
           </Link>
         </div>
