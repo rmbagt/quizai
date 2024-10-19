@@ -23,7 +23,7 @@ export default async function Component() {
   console.log(domain);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background to-secondary/20 px-4 py-8 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-gradient-to-b from-background to-secondary/20 px-10 py-14 md:px-24">
       <div className="mx-auto max-w-7xl">
         <h1 className="mb-8 text-center text-4xl font-extrabold tracking-tight text-primary sm:text-5xl">
           Saved Quizzes

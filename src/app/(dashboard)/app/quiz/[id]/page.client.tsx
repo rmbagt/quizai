@@ -133,7 +133,7 @@ export default function QuizPage({
 
   return (
     <div className="flex min-h-screen">
-      <div className="flex-grow overflow-y-auto p-14">
+      <div className="flex-grow overflow-y-auto px-10 py-14 md:px-24">
         {!showResults ? (
           <>
             <div className="mb-4 flex items-center justify-between">
