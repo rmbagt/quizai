@@ -5,7 +5,7 @@ import { cn } from "~/lib/utils";
 import { Toaster } from "~/components/ui/toaster";
 import { SiteHeader } from "~/components/landing/main-navbar";
 
-export const fontSans = FontSans({
+const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
