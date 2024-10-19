@@ -11,11 +11,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "~/trpc/react";
 import type { QuizData, QuizQuestion } from "~/types/quiz";
 import { QuizDisplay } from "~/components/create/quiz-display";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function CreateQuizPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const { mutateAsync, isPending } = api.completions.generateQuiz.useMutation();
-  const { mutateAsync: createQuiz } = api.quiz.createQuiz.useMutation();
+  const utils = api.useUtils();
+
+  const { mutateAsync, isPending } = api.completions.generateQuiz.useMutation({
+    onSuccess: async () => {
+      await utils.invalidate();
+      toast.success("Quiz generated successfully");
+    },
+    onMutate: () => {
+      toast.info("Generating quiz...");
+    },
+  });
+  const { mutateAsync: createQuiz } = api.quiz.createQuiz.useMutation({
+    onSuccess: async () => {
+      await utils.invalidate();
+      toast.success("Quiz created successfully");
+      router.push("/app/quiz");
+      router.refresh();
+    },
+    onMutate: async () => {
+      toast.info("Creating quiz...");
+    },
+  });
 
   const [prompt, setPrompt] = useState("");
   const [time, setTime] = useState("");

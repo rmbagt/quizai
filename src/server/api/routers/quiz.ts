@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
 export const quizRouter = createTRPCRouter({
     // Create Quiz
@@ -40,7 +40,7 @@ export const quizRouter = createTRPCRouter({
         }),
 
     // Read a specific quiz by ID
-    getQuiz: protectedProcedure
+    getQuiz: publicProcedure
         .input(z.object({ id: z.string() }))
         .query(async ({ ctx, input }) => {
             return ctx.db.quiz.findUnique({
