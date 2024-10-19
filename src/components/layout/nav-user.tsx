@@ -72,20 +72,27 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
               <ModeToggle />
               <p>Toggle mode</p>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() =>
+              onClick={(e) =>
                 signOut({
                   callbackUrl: "/",
                 })
               }
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
             >
-              <LogOut />
-              Log out
+              <LogOut color="red" />
+              <p className="font-bold text-red-600">Log out</p>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
