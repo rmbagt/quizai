@@ -5,6 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "~/trpc/react";
 
 interface QuizQuestion {
@@ -19,7 +22,6 @@ interface QuizData {
 }
 
 export default function CreateQuizPage() {
-  // const router = useRouter();
   const searchParams = useSearchParams();
   const { mutateAsync, isPending } = api.completions.generateQuiz.useMutation();
 
@@ -46,66 +48,139 @@ export default function CreateQuizPage() {
     setQuizData(res.object);
   };
 
+  const handleQuestionChange = (index: number, newQuestion: string) => {
+    const updatedQuestions = [...quizData.questions];
+    updatedQuestions[index].question = newQuestion;
+    setQuizData({ ...quizData, questions: updatedQuestions });
+  };
+
+  const handleChoiceChange = (
+    questionIndex: number,
+    choiceIndex: number,
+    newChoice: string,
+  ) => {
+    const updatedQuestions = [...quizData.questions];
+    updatedQuestions[questionIndex].choices[choiceIndex] = newChoice;
+    setQuizData({ ...quizData, questions: updatedQuestions });
+  };
+
+  const handleAnswerChange = (questionIndex: number, newAnswer: number) => {
+    const updatedQuestions = [...quizData.questions];
+    updatedQuestions[questionIndex].answer = newAnswer;
+    setQuizData({ ...quizData, questions: updatedQuestions });
+  };
+
+  const addNewQuestion = () => {
+    const newQuestion: QuizQuestion = {
+      question: "",
+      choices: ["", "", "", ""],
+      answer: 0,
+    };
+    setQuizData({
+      ...quizData,
+      questions: [...quizData.questions, newQuestion],
+    });
+  };
+
+  const handleSubmitQuiz = () => {
+    // Here you would typically send the quizData to your backend
+    console.log("Submitting quiz:", quizData);
+    // You can add your API call here to save the quiz
+  };
+
   return (
-    <div className="flex min-h-screen flex-col px-10 py-14 md:px-32">
-      <div className="rounded-md border-2 p-4 shadow-sm">
-        <h1 className="text-lg font-bold">Create a New Quiz</h1>
-        <div className="mt-4 flex flex-col gap-4">
-          <label
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
-            htmlFor="prompt"
-          >
-            Tell me about your quiz
-          </label>
-          <Textarea
-            placeholder="Calculus quiz that covers derivatives and integrals"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            id="prompt"
-          />
-          <label
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
-            htmlFor="time"
-          >
-            Time (in minutes)
-          </label>
-          <Input
-            placeholder="30"
-            type="number"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            id="time"
-          />
-          <label
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
-            htmlFor="number-of-questions"
-          >
-            Number of Questions
-          </label>
-          <Input
-            placeholder="20"
-            type="number"
-            value={questionCount}
-            onChange={(e) => setQuestionCount(e.target.value)}
-            id="number-of-questions"
-          />
+    <div className="flex min-h-screen flex-col px-4 py-8 md:px-8 lg:px-16">
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>Create a New Quiz</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-4">
+            <Label htmlFor="prompt">Tell me about your quiz</Label>
+            <Textarea
+              placeholder="Calculus quiz that covers derivatives and integrals"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              id="prompt"
+            />
+            <Label htmlFor="time">Time (in minutes)</Label>
+            <Input
+              placeholder="30"
+              type="number"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              id="time"
+            />
+            <Label htmlFor="number-of-questions">Number of Questions</Label>
+            <Input
+              placeholder="20"
+              type="number"
+              value={questionCount}
+              onChange={(e) => setQuestionCount(e.target.value)}
+              id="number-of-questions"
+            />
 
-          <Button
-            onClick={handleCreateQuiz}
-            className="rounded-md p-2"
-            disabled={isPending}
-          >
-            {isPending ? "Generating..." : "Create Quiz"}
-          </Button>
-        </div>
-      </div>
+            <Button onClick={handleCreateQuiz} disabled={isPending}>
+              {isPending ? "Generating..." : "Create Quiz"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
-      {quizData && (
+      {quizData.questions.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-xl font-bold">Generated Quiz</h2>
-          <pre className="mt-4 whitespace-pre-wrap">
-            {JSON.stringify(quizData, null, 2)}
-          </pre>
+          <h2 className="mb-4 text-2xl font-bold">Edit Quiz Questions</h2>
+          {quizData.questions.map((question, questionIndex) => (
+            <Card key={questionIndex} className="mb-6">
+              <CardHeader>
+                <CardTitle>Question {questionIndex + 1}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Textarea
+                  value={question.question}
+                  onChange={(e) =>
+                    handleQuestionChange(questionIndex, e.target.value)
+                  }
+                  className="mb-4"
+                  placeholder="Enter question"
+                />
+                <RadioGroup
+                  value={question.answer.toString()}
+                  onValueChange={(value) =>
+                    handleAnswerChange(questionIndex, parseInt(value))
+                  }
+                >
+                  {question.choices.map((choice, choiceIndex) => (
+                    <div
+                      key={choiceIndex}
+                      className="flex items-center space-x-2"
+                    >
+                      <RadioGroupItem
+                        value={choiceIndex.toString()}
+                        id={`q${questionIndex}c${choiceIndex}`}
+                      />
+                      <Input
+                        value={choice}
+                        onChange={(e) =>
+                          handleChoiceChange(
+                            questionIndex,
+                            choiceIndex,
+                            e.target.value,
+                          )
+                        }
+                        placeholder={`Choice ${choiceIndex + 1}`}
+                        className="flex-grow"
+                      />
+                    </div>
+                  ))}
+                </RadioGroup>
+              </CardContent>
+            </Card>
+          ))}
+          <div className="mt-4 flex justify-between">
+            <Button onClick={addNewQuestion}>Add New Question</Button>
+            <Button onClick={handleSubmitQuiz}>Submit Quiz</Button>
+          </div>
         </div>
       )}
     </div>
