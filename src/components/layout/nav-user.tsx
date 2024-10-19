@@ -1,6 +1,8 @@
 "use client";
 
 import { ChevronsUpDown, LogOut } from "lucide-react";
+import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -70,16 +72,16 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <ModeToggle />
-              <p>Toggle mode</p>
+            <DropdownMenuItem
+              onClick={() =>
+                signOut({
+                  callbackUrl: "/",
+                })
+              }
+            >
+              <LogOut />
+              Log out
             </DropdownMenuItem>
-            <Link href={user ? "/api/auth/signout" : "/api/auth/signin"}>
-              <DropdownMenuItem>
-                <LogOut />
-                <p>Log out</p>
-              </DropdownMenuItem>
-            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
