@@ -72,3 +72,11 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Quiz {
+    id       String   @id @default(cuid())
+    theme    String
+    question String[]
+    choices  String[]
+    answer   Int
+}

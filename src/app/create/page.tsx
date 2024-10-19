@@ -5,21 +5,12 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "~/trpc/react";
-
-interface QuizQuestion {
-  question: string;
-  choices: string[];
-  answer: number;
-}
-
-interface QuizData {
-  theme: string;
-  questions: QuizQuestion[];
-}
+import type { QuizData, QuizQuestion } from "~/types/quiz";
+import { QuizDisplay } from "~/components/create/quiz-display";
 
 export default function CreateQuizPage() {
   const searchParams = useSearchParams();
@@ -50,7 +41,9 @@ export default function CreateQuizPage() {
 
   const handleQuestionChange = (index: number, newQuestion: string) => {
     const updatedQuestions = [...quizData.questions];
-    updatedQuestions[index].question = newQuestion;
+    if (updatedQuestions[index]) {
+      updatedQuestions[index].question = newQuestion;
+    }
     setQuizData({ ...quizData, questions: updatedQuestions });
   };
 
@@ -60,13 +53,17 @@ export default function CreateQuizPage() {
     newChoice: string,
   ) => {
     const updatedQuestions = [...quizData.questions];
-    updatedQuestions[questionIndex].choices[choiceIndex] = newChoice;
+    if (updatedQuestions[questionIndex]) {
+      updatedQuestions[questionIndex].choices[choiceIndex] = newChoice;
+    }
     setQuizData({ ...quizData, questions: updatedQuestions });
   };
 
   const handleAnswerChange = (questionIndex: number, newAnswer: number) => {
     const updatedQuestions = [...quizData.questions];
-    updatedQuestions[questionIndex].answer = newAnswer;
+    if (updatedQuestions[questionIndex]) {
+      updatedQuestions[questionIndex].answer = newAnswer;
+    }
     setQuizData({ ...quizData, questions: updatedQuestions });
   };
 
@@ -131,51 +128,14 @@ export default function CreateQuizPage() {
         <div className="mt-8">
           <h2 className="mb-4 text-2xl font-bold">Edit Quiz Questions</h2>
           {quizData.questions.map((question, questionIndex) => (
-            <Card key={questionIndex} className="mb-6">
-              <CardHeader>
-                <CardTitle>Question {questionIndex + 1}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Textarea
-                  value={question.question}
-                  onChange={(e) =>
-                    handleQuestionChange(questionIndex, e.target.value)
-                  }
-                  className="mb-4"
-                  placeholder="Enter question"
-                />
-                <RadioGroup
-                  value={question.answer.toString()}
-                  onValueChange={(value) =>
-                    handleAnswerChange(questionIndex, parseInt(value))
-                  }
-                >
-                  {question.choices.map((choice, choiceIndex) => (
-                    <div
-                      key={choiceIndex}
-                      className="flex items-center space-x-2"
-                    >
-                      <RadioGroupItem
-                        value={choiceIndex.toString()}
-                        id={`q${questionIndex}c${choiceIndex}`}
-                      />
-                      <Input
-                        value={choice}
-                        onChange={(e) =>
-                          handleChoiceChange(
-                            questionIndex,
-                            choiceIndex,
-                            e.target.value,
-                          )
-                        }
-                        placeholder={`Choice ${choiceIndex + 1}`}
-                        className="flex-grow"
-                      />
-                    </div>
-                  ))}
-                </RadioGroup>
-              </CardContent>
-            </Card>
+            <QuizDisplay
+              key={questionIndex}
+              question={question}
+              questionIndex={questionIndex}
+              handleQuestionChange={handleQuestionChange}
+              handleAnswerChange={handleAnswerChange}
+              handleChoiceChange={handleChoiceChange}
+            />
           ))}
           <div className="mt-4 flex justify-between">
             <Button onClick={addNewQuestion}>Add New Question</Button>
