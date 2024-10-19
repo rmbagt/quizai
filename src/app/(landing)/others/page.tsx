@@ -4,21 +4,21 @@ import MemberCard from "~/components/landing/member-card";
 
 const members = [
   {
-    avatarSrc: "/",
+    avatarSrc: "/Jerry.jpg",
     avatarFallback: "J",
     name: "Stanislaus Kanaya Jerry Febriano",
     description: "BINUS University - stanislaus.febriano@binus.ac.id",
     quote: "Whatever the result is, be proud!",
   },
   {
-    avatarSrc: "/",
+    avatarSrc: "/Reynard.jpg",
     avatarFallback: "R",
     name: "Reynard Hansel",
     description: "BINUS University - reynard.hansel@binus.ac.id",
     quote: "We need to do our best, and God will handle the rest.",
   },
   {
-    avatarSrc: "/",
+    avatarSrc: "/Aldo.jpg",
     avatarFallback: "R",
     name: "Reynaldo Marchell Bagas Adji",
     description: "BINUS University - reynaldo.adji@binus.ac.id",

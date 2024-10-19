@@ -26,7 +26,7 @@ export function MainNav() {
               : "text-foreground/60",
           )}
         >
-          Others
+          Our Team
         </Link>
       </nav>
     </div>
