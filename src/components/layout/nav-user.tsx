@@ -72,6 +72,11 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <ModeToggle />
+              <p>Toggle mode</p>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() =>
                 signOut({
