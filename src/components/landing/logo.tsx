@@ -11,16 +11,16 @@ export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <div className="mr-4 hidden md:flex">
+    <div className="mr-4 flex">
       <Link href="/" className="mr-6 flex items-center space-x-2">
         <HiSparkles />
-        <span className="hidden font-bold sm:inline-block">quiz/ai</span>
+        <span className="font-bold">quiz/ai</span>
       </Link>
-      <nav className="flex items-center space-x-6 text-sm font-medium">
+      <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
         <Link
           href="/others"
           className={cn(
-            "transition-colors hover:text-foreground/80",
+            "text-nowrap transition-colors hover:text-foreground/80",
             pathname?.startsWith("/others")
               ? "text-foreground"
               : "text-foreground/60",
