@@ -33,12 +33,12 @@ import { Button } from "../ui/button";
 const items = [
   {
     title: "Home",
-    url: "/",
+    url: "/app/",
     icon: Home,
   },
   {
     title: "Create Quiz",
-    url: "/create",
+    url: "/app/create",
     icon: CirclePlus,
   },
   {
@@ -48,7 +48,7 @@ const items = [
   },
   {
     title: "Play Quiz",
-    url: "/play",
+    url: "/app/play",
     icon: Play,
   },
 ];
