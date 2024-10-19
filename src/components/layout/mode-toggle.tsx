@@ -14,8 +14,10 @@ export function ModeToggle() {
     setTheme(theme === "light" ? "dark" : "light");
   };
 
+  const isDarkMode = theme === "dark";
+
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex h-full items-center justify-center space-x-2">
       <Switch
         id="theme-toggle"
         checked={theme === "dark"}
@@ -25,11 +27,13 @@ export function ModeToggle() {
       <Label htmlFor="theme-toggle" className="sr-only">
         Toggle theme
       </Label>
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon
-        className="h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-        color="#ffffff"
-      />
+      <div className="h-full px-2">
+        {isDarkMode ? (
+          <Sun className={`h-[1.2rem] w-[1.2rem]`} />
+        ) : (
+          <Moon className={`h-[1.2rem] w-[1.2rem]`} />
+        )}
+      </div>
     </div>
   );
 }
