@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { BotMessageSquare } from "lucide-react";
-import { getProviders } from "next-auth/react";
-
 import { RandomText } from "@/components/auth/random-text";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "~/server/auth";
-import { SignInButton } from "./page.client";
-import { Suspense } from "react";
+import { SignIn } from "./page.client";
 import { ErrorLoginMessage } from "~/components/auth/error";
 import { HiSparkles } from "react-icons/hi2";
 
@@ -17,51 +13,53 @@ export default async function LoginPage() {
     return redirect("/");
   }
 
-  const providers = await getProviders();
-
   return (
-    <>
-      <section className="flex h-screen w-screen justify-between bg-[hsl(262.1_83.3%_57.8%)]">
-        <div className="flex flex-col justify-between p-5">
-          <Link
-            href="/"
-            className="mr-6 flex items-center space-x-2 text-white"
-          >
-            <HiSparkles />
-            <span className="hidden font-bold sm:inline-block">quiz/ai</span>
-          </Link>
-          <RandomText />
-          <p className="text-white">
-            Made with 🩷 from{" "}
-            <span className="-ml-1 cursor-pointer rounded-md px-1 py-[0.5] text-white hover:bg-primary/20">
-              quiz/ai.
-            </span>
-          </p>
-        </div>
-        <div className="relative flex h-full w-[500px] flex-col items-center justify-center bg-accent">
-          <div className="relative flex h-full max-w-sm flex-col items-center justify-center">
-            <div className="flex flex-col items-center justify-center gap-5">
-              <p className="mb-4 text-4xl font-bold text-foreground">
-                Welcome back!
-              </p>
-              <div className="flex w-full flex-col gap-2">
-                {providers &&
-                  Object.values(providers).map((provider) => (
-                    <SignInButton key={provider.name} provider={provider} />
-                  ))}
-              </div>
-              <Suspense>
-                <ErrorLoginMessage />
-              </Suspense>
+    <section className="flex min-h-screen w-full flex-col bg-[hsl(262.1_83.3%_57.8%)] lg:flex-row">
+      {/* Desktop left section */}
+      <div className="hidden lg:flex lg:w-2/3 lg:flex-col lg:justify-between lg:p-5">
+        <Link href="/" className="mr-6 flex items-center space-x-2 text-white">
+          <HiSparkles className="h-6 w-6" />
+          <span className="font-bold">quiz/ai</span>
+        </Link>
+        <RandomText />
+        <p className="text-white">
+          Made with 🩷 from{" "}
+          <span className="-ml-1 cursor-pointer rounded-md px-1 py-[0.5] text-white hover:bg-primary/20">
+            quiz/ai.
+          </span>
+        </p>
+      </div>
+
+      {/* Mobile and Desktop right section */}
+      <div className="flex flex-1 items-center justify-center bg-secondary p-4 lg:w-1/3 lg:bg-secondary lg:p-5">
+        <div className="w-full max-w-md space-y-8">
+          <div className="rounded-lg bg-white px-6 py-8 shadow-md lg:shadow-none">
+            <h2 className="mb-6 text-center text-2xl font-bold text-gray-900 lg:text-3xl">
+              Log in to your account
+            </h2>
+
+            <div className="mt-4 space-y-2">
+              <SignIn />
             </div>
-            <div className="relative top-[25%] flex flex-col items-center">
-              <div className="flex">
-                <p className="text-lg">Anything Music Quiz</p>
-              </div>
-            </div>
+
+            <ErrorLoginMessage />
           </div>
         </div>
-      </section>
-    </>
+      </div>
+
+      {/* Mobile bottom section */}
+      <div className="mt-2 flex flex-col items-center bg-[hsl(262.1_83.3%_57.8%)] p-4 text-white lg:hidden">
+        <Link href="/" className="mb-4 flex items-center space-x-2">
+          <HiSparkles className="h-6 w-6" />
+          <span className="font-bold">quiz/ai</span>
+        </Link>
+        <p className="text-background/80">
+          Made with 🩷 from{" "}
+          <span className="-ml-1 cursor-pointer rounded-md px-1 py-[0.5] hover:bg-primary/20">
+            quiz/ai.
+          </span>
+        </p>
+      </div>
+    </section>
   );
 }

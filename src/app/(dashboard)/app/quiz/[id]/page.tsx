@@ -1,5 +1,5 @@
+import QuizPage from "~/components/quiz/quiz-play";
 import { api } from "~/trpc/server";
-import QuizPage from "./page.client";
 
 export default async function Quiz({ params }: { params: { id: string } }) {
   const data = await api.quiz.getQuiz({ id: params.id });
