@@ -2,11 +2,45 @@
 
 import { Button } from "@/components/ui/button";
 import { signIn, type ClientSafeProvider } from "next-auth/react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaDiscord } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { Skeleton } from "~/components/ui/skeleton";
+
+type Providers = Record<string, ClientSafeProvider>;
+
+export function SignIn() {
+  const [providers, setProviders] = useState<Providers | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/providers")
+      .then((res) => res.json())
+      .then((data: Providers) => setProviders(data))
+      .catch((error) => console.error("Error fetching providers:", error));
+  }, []);
+
+  if (!providers) {
+    return (
+      <div className="flex w-full flex-col gap-2">
+        <Skeleton className="h-10 w-full bg-muted-foreground/10" />
+        <Skeleton className="h-10 w-full bg-muted-foreground/10" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {providers &&
+        Object.values(providers).map((provider: ClientSafeProvider) => (
+          <SignInButton key={provider.id} provider={provider} />
+        ))}
+    </>
+  );
+}
 
 export function SignInButton({ provider }: { provider: ClientSafeProvider }) {
+  if (!provider) return null;
+
   switch (provider.id) {
     case "google":
       return (
