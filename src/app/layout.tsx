@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/layout/theme-provider";
 import { Toaster } from "~/components/ui/sonner";
+import Providers from "~/components/layout/loading-provider";
 
 export const metadata: Metadata = {
   title: "quiz/ai",
@@ -31,7 +32,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Toaster position="top-center" />
-            {children}
+            <Providers>{children}</Providers>
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
