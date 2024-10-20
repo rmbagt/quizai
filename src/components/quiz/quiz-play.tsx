@@ -178,7 +178,10 @@ export default function QuizPage({
   };
 
   const scrollToQuestion = (index: number) => {
-    resultRefs.current[index]?.scrollIntoView({ behavior: "smooth" });
+    resultRefs.current[index]?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   };
 
   if (!quizData) {
