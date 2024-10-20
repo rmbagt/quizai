@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { QuizQuestion } from "~/types/quiz";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Trash2 } from "lucide-react";
 
 export function QuizDisplay({
   question,
@@ -10,6 +12,7 @@ export function QuizDisplay({
   handleQuestionChange,
   handleAnswerChange,
   handleChoiceChange,
+  handleDeleteQuestion,
 }: {
   question: QuizQuestion;
   questionIndex: number;
@@ -20,11 +23,22 @@ export function QuizDisplay({
     choiceIndex: number,
     value: string,
   ) => void;
+  handleDeleteQuestion: (index: number) => void;
 }) {
   return (
     <Card key={questionIndex} className="mb-6">
-      <CardHeader>
-        <CardTitle>Question {questionIndex + 1}</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardTitle className="h-max w-max">
+          Question {questionIndex + 1}
+        </CardTitle>
+        <Button
+          variant="destructive"
+          size="icon"
+          onClick={() => handleDeleteQuestion(questionIndex)}
+        >
+          <Trash2 className="h-4 w-4" />
+          <p className="sr-only">Delete question</p>
+        </Button>
       </CardHeader>
       <CardContent>
         <Textarea

@@ -42,10 +42,12 @@ export default function CreateQuizPage() {
   const [prompt, setPrompt] = useState("");
   const [time, setTime] = useState("");
   const [questionCount, setQuestionCount] = useState("");
+  const [language, setLanguage] = useState("");
   const [quizData, setQuizData] = useState<QuizData>({
     theme: "",
     questions: [],
     workingTime: Number(time),
+    language: language,
   });
 
   useEffect(() => {
@@ -58,11 +60,13 @@ export default function CreateQuizPage() {
     const res = await mutateAsync({
       topic: prompt,
       totalQuestions: Number(questionCount),
+      language: language,
     });
 
     setQuizData({
       ...res.object,
       workingTime: Number(time),
+      language: language,
     });
   };
 
@@ -106,6 +110,12 @@ export default function CreateQuizPage() {
     });
   };
 
+  const handleDeleteQuestion = (index: number) => {
+    const updatedQuestions = quizData.questions.filter((_, i) => i !== index);
+    setQuizData({ ...quizData, questions: updatedQuestions });
+    toast.success("Question deleted successfully");
+  };
+
   const handleSubmitQuiz = async () => {
     console.log("Submitting quiz:", quizData);
     await createQuiz(quizData);
@@ -113,21 +123,24 @@ export default function CreateQuizPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center px-10 py-14 md:px-24">
-      <h1 className="mb-8 text-4xl font-bold">What you want to practice?</h1>
+      <h1 className="mb-8 text-3xl font-bold sm:text-4xl">
+        What do you want to practice?
+      </h1>
       <Card className="w-full max-w-3xl">
         <CardHeader>
           <CardTitle className="text-2xl">Create a New Quiz</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-6">
             <div className="relative">
               <Textarea
                 placeholder="Tell me about your quiz..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
+                className="min-h-[100px]"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex flex-col justify-between gap-1">
                 <Label htmlFor="time">Time (in minutes)</Label>
                 <Input
@@ -149,6 +162,16 @@ export default function CreateQuizPage() {
                 />
               </div>
             </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="language">Language</Label>
+              <Input
+                placeholder="Ex: English"
+                type="text"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                id="language"
+              />
+            </div>
             <Button onClick={handleCreateQuiz} disabled={isPending}>
               {isPending ? "Generating..." : "Create Quiz"}
             </Button>
@@ -167,9 +190,10 @@ export default function CreateQuizPage() {
               handleQuestionChange={handleQuestionChange}
               handleAnswerChange={handleAnswerChange}
               handleChoiceChange={handleChoiceChange}
+              handleDeleteQuestion={handleDeleteQuestion}
             />
           ))}
-          <div className="mt-4 flex justify-between">
+          <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:justify-between">
             <Button onClick={addNewQuestion}>Add New Question</Button>
             <Button onClick={handleSubmitQuiz}>Submit Quiz</Button>
           </div>
