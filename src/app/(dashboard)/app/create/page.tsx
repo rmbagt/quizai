@@ -120,7 +120,6 @@ export default function CreateQuizPage() {
   };
 
   const handleSubmitQuiz = async () => {
-    console.log("Submitting quiz:", quizData);
     await createQuiz(quizData);
   };
 

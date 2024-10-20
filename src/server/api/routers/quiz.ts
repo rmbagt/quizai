@@ -52,7 +52,7 @@ export const quizRouter = createTRPCRouter({
     // Read all quizzes
     getAllQuizzes: protectedProcedure.query(async ({ ctx }) => {
         return ctx.db.quiz.findMany({
-            where: { createdById: ctx.session.user.id }, // Restrict to user's own quizzes
+            where: { createdById: ctx.session.user.id },
             orderBy: { createdAt: 'desc' },
         });
     }),
@@ -180,8 +180,13 @@ export const quizRouter = createTRPCRouter({
     // Get all quiz attempts
     getAllUserQuizAttempts: protectedProcedure.query(async ({ ctx }) => {
         return ctx.db.quizAttempt.findMany({
-            where: { userId: ctx.session.user.id },
+            where: { userId: ctx.session.user.id, score: { not: null } },
             orderBy: { startedAt: 'desc' },
+            include: {
+                quiz: {
+                    select: { createdAt: true, workingTime: true, totalQuestions: true },
+                }
+            },
         });
     }),
 });
