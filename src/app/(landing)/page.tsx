@@ -17,7 +17,7 @@ export default function Home() {
       <div className="absolute z-10 -mt-16 h-screen w-full bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-yellow-400/30 via-red-50/0 transition-colors dark:from-cyan-600/30 dark:via-red-50/0" />
       <div className="layout px-4 sm:px-6 lg:px-8">
         <section id="intro">
-          <div className="-mt-[56px] flex min-h-screen w-full flex-col items-center justify-center gap-4 align-middle">
+          <div className="-mt-[56px] flex min-h-[70svh] w-full flex-col items-center justify-center gap-4 pt-40 align-middle">
             <p className="bg-gradient-to-r from-purple-400 to-yellow-400 text-center text-xl font-bold tracking-tight dark:bg-gradient-to-r dark:from-green-300 dark:via-blue-500 dark:to-purple-600 sm:text-2xl">
               quiz/ai
             </p>
@@ -50,16 +50,39 @@ export default function Home() {
               </div>
             </div>
 
-            <p className="z-20 text-sm text-muted-foreground sm:text-base">
+            <p className="z-20 mt-8 text-sm text-muted-foreground sm:text-base">
               Lihat bagaimana proses kami
-              <Link href="#about">
+              <Link href="#video">
                 <FaArrowDown className="ml-1 inline-block animate-bounce" />
               </Link>
             </p>
           </div>
         </section>
 
-        <section id="about" className="w-full py-16 sm:py-24">
+        <section
+          id="video"
+          className="flex w-full items-center justify-center py-16 sm:py-24"
+        >
+          <div className="relative aspect-[16/11.3] overflow-hidden rounded-lg">
+            <div className="absolute inset-12 z-0 animate-pulse bg-gradient-to-r from-purple-400 via-yellow-400 to-green-300 opacity-75 blur-xl filter dark:from-green-300 dark:via-blue-500 dark:to-purple-600" />
+            <div className="p-20">
+              <video
+                className="relative z-20 w-full rounded-xl shadow-xl"
+                autoPlay
+                loop
+                muted
+                playsInline
+                disablePictureInPicture
+                controlsList="nodownload"
+              >
+                <source src="/placeholder.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" className="min-h-[50svh] w-full py-16 sm:py-24">
           <div className="flex flex-col items-center justify-center gap-4">
             <h1 className="text-center text-3xl font-bold tracking-tight sm:text-5xl">
               🌐 <Accent>Powered by AI</Accent>
@@ -78,7 +101,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="parameter" className="w-full py-16 sm:py-24">
+        <section id="parameter" className="min-h-[50svh] w-full py-16 sm:py-24">
           <div className="flex flex-col items-center justify-center gap-4">
             <h1 className="text-center text-3xl font-bold tracking-tight sm:text-5xl">
               💡 Why use <Accent className="font-black">quiz/ai</Accent>?

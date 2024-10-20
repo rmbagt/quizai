@@ -81,10 +81,37 @@
   }
 
   .layout {
-    max-width: 68rem;
+    max-width: 90rem;
     @apply mx-auto w-11/12;
   }
   .balance {
     text-wrap: balance;
   }
+}
+
+@keyframes rotate-hue {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+.rotating-rainbow {
+  position: absolute;
+  inset: 3rem;
+  z-index: 0;
+  background: linear-gradient(
+    to right,
+    #ff0000,
+    #ff7f00,
+    #ffff00,
+    #00ff00,
+    #0000ff,
+    #8b00ff
+  );
+  opacity: 0.75;
+  filter: blur(2.5rem);
+  animation: rotate-hue 10s linear infinite;
 }
