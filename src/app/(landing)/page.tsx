@@ -64,8 +64,8 @@ export default function Home() {
           className="flex w-full items-center justify-center py-16 sm:py-24"
         >
           <div className="relative aspect-[16/11.3] overflow-hidden rounded-lg">
-            <div className="absolute inset-12 z-0 animate-pulse bg-gradient-to-r from-purple-400 via-yellow-400 to-green-300 opacity-75 blur-xl filter dark:from-green-300 dark:via-blue-500 dark:to-purple-600" />
-            <div className="p-20">
+            <div className="absolute inset-4 z-0 animate-pulse rounded-xl bg-gradient-to-r from-purple-400 via-yellow-400 to-green-300 opacity-75 blur-md filter dark:from-green-300 dark:via-blue-500 dark:to-purple-600 md:inset-12 md:blur-xl" />
+            <div className="p-5 md:p-20">
               <video
                 className="relative z-20 w-full rounded-xl shadow-xl"
                 autoPlay
