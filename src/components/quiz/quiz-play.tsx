@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -22,9 +22,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import type { Question, Quiz } from "@prisma/client";
 import { cn } from "~/lib/utils";
+import { api } from "~/trpc/react";
 
 export default function QuizPage({
   quizData,
@@ -37,6 +38,8 @@ export default function QuizPage({
 }) {
   const searchParams = useSearchParams();
   const isReviewMode = searchParams.get("mode") === "review";
+  const utils = api.useUtils();
+  const router = useRouter();
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState<number[]>([]);
@@ -50,6 +53,35 @@ export default function QuizPage({
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [score, setScore] = useState(0);
   const resultRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [quizAttemptId, setQuizAttemptId] = useState<string | null>(null);
+
+  const startQuizAttempt = api.quiz.startQuizAttempt.useMutation();
+  const saveQuizSnapshot = api.quiz.saveQuizSnapshot.useMutation();
+  const endQuizAttempt = api.quiz.endQuizAttempt.useMutation();
+
+  useEffect(() => {
+    if (quizData && !isReviewMode) {
+      startQuizAttempt.mutate(
+        { quizId: quizData.id },
+        {
+          onSuccess: (data) => setQuizAttemptId(data.id),
+        },
+      );
+    }
+  }, [quizData, isReviewMode]);
+
+  useEffect(() => {
+    if (!isQuizEnded && quizAttemptId) {
+      const saveInterval = setInterval(() => {
+        saveQuizSnapshot.mutate({
+          quizAttemptId,
+          answers: Object.fromEntries(userAnswers.entries()),
+        });
+      }, 5 * 1000); // Save every 30 seconds
+
+      return () => clearInterval(saveInterval);
+    }
+  }, [isQuizEnded, quizAttemptId, userAnswers]);
 
   useEffect(() => {
     if (quizData) {
@@ -78,7 +110,7 @@ export default function QuizPage({
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(timer);
-          handleQuizEnd("timeUp");
+          handleQuizEnd("timeUp").catch(console.error);
         }
         return prevTime > 0 ? prevTime - 1 : 0;
       });
@@ -87,15 +119,27 @@ export default function QuizPage({
     return () => clearInterval(timer);
   }, [isQuizEnded, quizData, isReviewMode]);
 
-  const handleQuizEnd = (reason: "timeUp" | "completed") => {
+  const handleQuizEnd = async (reason: "timeUp" | "completed") => {
     setIsQuizEnded(true);
     setModalContent(reason);
     setShowModal(true);
+    await utils.quiz.getUserQuizAttempts.invalidate();
+    await utils.quiz.getUserQuizAttempts.prefetch({
+      quizId: quizData?.id,
+    });
     if (quizData) {
       const userScore = userAnswers.reduce((acc, answer, index) => {
         return acc + (answer === quizData.questions[index]?.answer ? 1 : 0);
       }, 0);
       setScore(userScore);
+
+      if (quizAttemptId) {
+        endQuizAttempt.mutate({
+          quizAttemptId,
+          answers: Object.fromEntries(userAnswers.entries()),
+          score: userScore, // Use the calculated userScore here
+        });
+      }
     }
   };
 
@@ -121,8 +165,8 @@ export default function QuizPage({
     }
   };
 
-  const handleConfirmEnd = () => {
-    handleQuizEnd("completed");
+  const handleConfirmEnd = async () => {
+    await handleQuizEnd("completed");
   };
 
   const formatTime = (seconds: number) => {
@@ -289,7 +333,16 @@ export default function QuizPage({
             </>
           ) : (
             <div className="space-y-8">
-              <h2 className="text-2xl font-bold md:text-3xl">Quiz Results</h2>
+              <div className="flex items-center gap-4">
+                <ArrowLeft
+                  onClick={() => {
+                    router.push("/app/quiz");
+                    router.refresh();
+                  }}
+                  className="h-6 w-6 cursor-pointer"
+                />
+                <h2 className="text-2xl font-bold md:text-3xl">Quiz Results</h2>
+              </div>
               <div className="mb-4 text-lg font-semibold md:text-xl">
                 Your Score: {score} / {quizData.totalQuestions} (
                 {((score / quizData.totalQuestions) * 100).toFixed(2)}%)
