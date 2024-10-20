@@ -175,10 +175,6 @@ export const quizRouter = createTRPCRouter({
                     userId: ctx.session.user.id,
                     quizId: input.quizId,
                 },
-                include: {
-                    quiz: true,
-                    snapshots: true,
-                },
                 orderBy: { startedAt: 'desc' },
             });
         }),

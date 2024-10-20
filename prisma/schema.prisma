@@ -97,7 +97,7 @@ model Question {
 
 model QuizAttempt {
     id        String         @id @default(cuid())
-    quiz      Quiz           @relation(fields: [quizId], references: [id])
+    quiz      Quiz           @relation(fields: [quizId], references: [id], onDelete: Cascade)
     quizId    String
     user      User           @relation(fields: [userId], references: [id])
     userId    String
@@ -110,7 +110,7 @@ model QuizAttempt {
 
 model QuizSnapshot {
     id            String      @id @default(cuid())
-    quizAttempt   QuizAttempt @relation(fields: [quizAttemptId], references: [id])
+    quizAttempt   QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
     quizAttemptId String
     answers       Json
     timestamp     DateTime    @default(now())
