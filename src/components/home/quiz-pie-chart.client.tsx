@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
 import * as React from "react";
@@ -8,19 +7,20 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
+} from "@/components/ui/card";
 
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "~/components/ui/chart";
+} from "@/components/ui/chart";
 
-import type { ChartConfig } from "~/components/ui/chart";
+import type { ChartConfig } from "@/components/ui/chart";
 
-export const description = "Quiz Pie Chart";
+export const description = "Enhanced Quiz Pie Chart";
 
 const chartConfig = {
   numberOfAnswer: {
@@ -28,7 +28,7 @@ const chartConfig = {
   },
   wrong: {
     label: "Wrong",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-3))",
   },
   correct: {
     label: "Correct",
@@ -46,26 +46,41 @@ export function QuizPieChartClient({
   totalAnswers: number;
 }) {
   const chartData = [
-    { answer: "wrong", numberOfAnswer: totalWrong, fill: "var(--color-wrong)" },
+    {
+      answer: "wrong",
+      numberOfAnswer: totalWrong,
+      fill: "hsl(var(--chart-3))",
+    },
     {
       answer: "correct",
       numberOfAnswer: totalCorrect,
-      fill: "var(--color-correct)",
+      fill: "hsl(var(--chart-2))",
     },
   ];
 
+  const correctPercentage = (totalCorrect / totalAnswers) * 100;
+  const wrongPercentage = (totalWrong / totalAnswers) * 100;
+
+  const getPerformanceColor = (percentage: number) => {
+    if (percentage < 40) return "text-red-500";
+    if (percentage < 70) return "text-yellow-500";
+    return "text-green-500";
+  };
+
+  const performanceColor = getPerformanceColor(correctPercentage);
+
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Answer</CardTitle>
+      <CardHeader className="items-center pb-2">
+        <CardTitle>Quiz Performance</CardTitle>
         <CardDescription>
-          Correct and wrong answer in last 1 week
+          Correct and wrong answers in the last week
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[200px]"
+          className="mx-auto aspect-square max-h-[250px]"
         >
           <PieChart>
             <ChartTooltip
@@ -76,8 +91,10 @@ export function QuizPieChartClient({
               data={chartData}
               dataKey="numberOfAnswer"
               nameKey="answer"
-              innerRadius={50}
-              strokeWidth={5}
+              innerRadius={60}
+              outerRadius={80}
+              strokeWidth={4}
+              paddingAngle={2}
             >
               <Label
                 content={({ viewBox }) => {
@@ -92,16 +109,16 @@ export function QuizPieChartClient({
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className={`fill-foreground text-3xl font-bold ${performanceColor}`}
                         >
-                          {totalAnswers.toLocaleString()}
+                          {correctPercentage.toFixed(1)}%
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy ?? 0) + 24}
-                          className="fill-muted-foreground"
+                          className="fill-muted-foreground text-sm"
                         >
-                          Answers
+                          Correct
                         </tspan>
                       </text>
                     );
@@ -112,6 +129,26 @@ export function QuizPieChartClient({
           </PieChart>
         </ChartContainer>
       </CardContent>
+      <CardFooter>
+        <div className="flex w-full justify-between text-sm">
+          <div className="flex flex-col items-center">
+            <span className="text-muted-foreground">Wrong</span>
+            <span className="font-semibold text-red-500">
+              {totalWrong} ({wrongPercentage.toFixed(1)}%)
+            </span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-muted-foreground">Total</span>
+            <span className="font-semibold">{totalAnswers}</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-muted-foreground">Correct</span>
+            <span className="font-semibold text-green-500">
+              {totalCorrect} ({correctPercentage.toFixed(1)}%)
+            </span>
+          </div>
+        </div>
+      </CardFooter>
     </Card>
   );
 }

@@ -25,9 +25,7 @@ import { api } from "~/trpc/react";
 import { ShareButton } from "../../app/(dashboard)/app/quiz/page.client";
 import type { Quiz, QuizAttempt } from "@prisma/client";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { Globe } from "lucide-react";
-import { set } from "zod";
 
 type QuizAttemptsMap = Record<string, QuizAttempt[]>;
 
@@ -79,25 +77,25 @@ export function QuizListClient({
 
   const handleDelete = (quizId: string) => mutate({ id: quizId });
   const markAsAI = api.community.markQuizAsAIGenerated.useMutation({
-    onSuccess: ({ isGeneratedByAI }) => {
+    onSuccess: async ({ isGeneratedByAI }) => {
       toast.success(
         `Quiz ${isGeneratedByAI ? "marked" : "unmarked"} as AI Generated`,
       );
-      utils.quiz.getAllQuizzes.invalidate();
+      await utils.quiz.getAllQuizzes.invalidate();
     },
   });
   const markAsVerified = api.community.verifyQuizByExpert.useMutation({
-    onSuccess: ({ isVerifiedByExpert }) => {
+    onSuccess: async ({ isVerifiedByExpert }) => {
       toast.success(
         `Quiz ${isVerifiedByExpert ? "marked" : "unmarked"} as Verified by Expert`,
       );
-      utils.quiz.getAllQuizzes.invalidate();
+      await utils.quiz.getAllQuizzes.invalidate();
     },
   });
   const setAsPublic = api.community.setQuizAsPublic.useMutation({
-    onSuccess: ({ isPublic }) => {
+    onSuccess: async ({ isPublic }) => {
       toast.success(`Quiz ${isPublic ? "marked" : "unmarked"} as Public`);
-      utils.quiz.getAllQuizzes.invalidate();
+      await utils.quiz.getAllQuizzes.invalidate();
     },
   });
 

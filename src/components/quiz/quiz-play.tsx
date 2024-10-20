@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -177,7 +178,10 @@ export default function QuizPage({
   };
 
   const scrollToQuestion = (index: number) => {
-    resultRefs.current[index]?.scrollIntoView({ behavior: "smooth" });
+    resultRefs.current[index]?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   };
 
   if (!quizData) {

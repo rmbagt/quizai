@@ -6,14 +6,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { QuizAttempt, QuizData } from "~/service/attempts";
+import { type QuizAttempt } from "@prisma/client";
 
-type Props = {
+export function QuizBarChart({
+  quizAttemptsMap,
+}: {
   quizAttemptsMap: Record<string, QuizAttempt[]>;
-  data: QuizData[];
-};
-
-export function QuizBarChart({ quizAttemptsMap, data }: Props) {
+}) {
   const today = new Date();
   const lastWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 

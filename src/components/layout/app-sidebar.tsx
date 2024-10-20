@@ -55,7 +55,6 @@ export function AppSidebar({
   props?: React.ComponentProps<typeof Sidebar>;
   session?: Session | null;
 }) {
-  console.log(session);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>

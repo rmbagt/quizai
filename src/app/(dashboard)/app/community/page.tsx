@@ -1,35 +1,13 @@
 import { api } from "~/trpc/server";
 import { CommunityClient } from "./page.client";
+import { getAllAttempts } from "~/service/attempts";
+import { type QuizWithUser } from "~/types/community";
 
 export default async function Community() {
   const data = await api.community.getCommunityQuizzes();
-
-  // Fetch attempts for all quizzes
-  const allAttempts = await Promise.all(
-    data.map(async (quiz) => {
-      try {
-        const attempts = await api.quiz.getUserQuizAttempts({
-          quizId: quiz.id,
-        });
-        return attempts.filter((attempt) => attempt.endedAt !== null);
-      } catch (error) {
-        console.error(`Error fetching attempts for quiz ${quiz.id}:`, error);
-        return []; // Return an empty array if there's an error
-      }
-    }),
-  );
-
-  // Create a map of quiz attempts
-  const quizAttemptsMap = data.reduce(
-    (acc, quiz, index) => {
-      acc[quiz.id] = allAttempts[index] ?? [];
-      return acc;
-    },
-    {} as Record<
-      string,
-      Awaited<ReturnType<typeof api.quiz.getUserQuizAttempts>>
-    >,
-  );
+  const { quizData, quizAttemptsMap } = await getAllAttempts<QuizWithUser>({
+    quizData: data,
+  });
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-secondary/20 px-4 py-14 sm:px-6 lg:px-8">
@@ -38,7 +16,7 @@ export default async function Community() {
           Community Quizzes
         </h1>
         <CommunityClient
-          initialQuizzes={data}
+          initialQuizzes={quizData}
           initialQuizAttemptsMap={quizAttemptsMap}
         />
       </div>

@@ -1,44 +1,31 @@
 import { api } from "~/trpc/server";
 
-export type QuizAttempt = {
-  id: string;
-  quizId: string;
-  answers: unknown;
-  score: number | null;
-  userId: string;
-  startedAt: Date;
-  endedAt: Date | null;
-};
+import type { Quiz, QuizAttempt } from "@prisma/client";
 
-export type QuizData = {
-  theme: string;
-  id: string;
-  createdById: string;
-  totalQuestions: number;
-  workingTime: number;
-};
+type QuizLike = Quiz | QuizAttempt;
 
-export async function getAllAttempts() {
-  const data = await api.quiz.getAllQuizzes();
+export async function getAllAttempts<T extends QuizLike>({ quizData }: { quizData: T[] }) {
   // Fetch attempts for all quizzes
   const allAttempts = await Promise.all(
-    data.map(async (quiz) => {
+    quizData.map(async (quiz) => {
       try {
+        const quizId = 'quizId' in quiz ? quiz.quizId : quiz.id;
         const attempts = await api.quiz.getUserQuizAttempts({
-          quizId: quiz.id,
+          quizId,
         });
         return attempts.filter((attempt) => attempt.endedAt !== null);
       } catch (error) {
         console.error(`Error fetching attempts for quiz ${quiz.id}:`, error);
-        return []; // Return an empty array if there's an error
+        return [];
       }
     }),
   );
 
   // Create a map of quiz attempts
-  const quizAttemptsMap = data.reduce(
+  const quizAttemptsMap = quizData.reduce(
     (acc, quiz, index) => {
-      acc[quiz.id] = allAttempts[index] ?? [];
+      const quizId = 'quizId' in quiz ? quiz.quizId : quiz.id;
+      acc[quizId] = allAttempts[index] ?? [];
       return acc;
     },
     {} as Record<
@@ -47,33 +34,26 @@ export async function getAllAttempts() {
     >,
   );
 
-  return { data, quizAttemptsMap };
+  return { quizData, quizAttemptsMap };
 }
 
 export async function processAllQuizAttempts() {
-  const { data: quizzes, quizAttemptsMap } = await getAllAttempts();
+  const data: QuizAttempt[] = await api.quiz.getAllUserQuizAttempts();
   let totalCorrect = 0;
   let totalWrong = 0;
 
-  for (const quiz of quizzes) {
-    const quizData = await api.quiz.getQuiz({ id: quiz.id });
-    if (!quizData || !quizData.questions) continue;
+  data.forEach((attempt) => {
+    const totalQuestions = attempt.answers && typeof attempt.answers === 'object' && attempt.answers !== null
+      ? Object.keys(attempt.answers).length
+      : 0;
 
-    const attempts = quizAttemptsMap[quiz.id] ?? [];
-    attempts.forEach((attempt) => {
-      const userAnswers = attempt.answers as Record<string, number>;
+    const score = attempt.score ?? 0;
+    totalCorrect += score;
+    totalWrong += totalQuestions - score;
+  });
 
-      quizData.questions.forEach((question, index) => {
-        if (userAnswers[index] === question.answer) {
-          totalCorrect++;
-        } else {
-          totalWrong++;
-        }
-      });
-    });
-  }
-
-  return { totalCorrect, totalWrong, totalAnswers: totalCorrect + totalWrong };
+  const totalAnswers = totalCorrect + totalWrong;
+  return { totalCorrect, totalWrong, totalAnswers };
 }
 
 interface WeeklyQuizStats {
@@ -83,87 +63,46 @@ interface WeeklyQuizStats {
   };
   userTotalTime: {
     minutes: number;
-    displayTime: string; // Will contain formatted time string
+    displayTime: string;
     percentageChange: number;
   };
 }
 
 export async function getNewQuizzesAndUserTime(): Promise<WeeklyQuizStats> {
-  const { data: quizzes, quizAttemptsMap } = await getAllAttempts();
+  const createdQuizzes = await api.quiz.getAllQuizzes();
+  const attemptedQuiz = await api.quiz.getAllUserQuizAttempts();
 
   const now = new Date();
   const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
   // Calculate new quizzes
-  const currentWeekQuizzes = quizzes.filter(
-    (quiz) =>
-      new Date(quiz.createdAt as Date) >= oneWeekAgo &&
-      new Date(quiz.createdAt as Date) <= now,
-  );
+  const currentWeekQuizzes = createdQuizzes.filter(quiz => new Date(quiz.createdAt) >= oneWeekAgo);
+  const previousWeekQuizzes = createdQuizzes.filter(quiz => new Date(quiz.createdAt) >= twoWeeksAgo && new Date(quiz.createdAt) < oneWeekAgo);
 
-  const previousWeekQuizzes = quizzes.filter(
-    (quiz) =>
-      new Date(quiz.createdAt as Date) >= twoWeeksAgo &&
-      new Date(quiz.createdAt as Date) < oneWeekAgo,
-  );
+  const quizPercentageChange = previousWeekQuizzes.length !== 0
+    ? ((currentWeekQuizzes.length - previousWeekQuizzes.length) / previousWeekQuizzes.length) * 100
+    : 100;
 
-  // Calculate time spent in minutes
-  let currentWeekMinutes = 0;
-  let previousWeekMinutes = 0;
+  // Calculate user time
+  const calculateTotalMinutes = (quizzes: typeof attemptedQuiz) =>
+    quizzes.reduce((total, attempt) => total + attempt.quiz.workingTime, 0);
 
-  Object.entries(quizAttemptsMap).forEach(([_, attempts]) => {
-    attempts.forEach((attempt) => {
-      if (!attempt.startedAt || !attempt.endedAt) return;
+  const currentWeekAttempts = attemptedQuiz.filter(attempt => new Date(attempt.quiz.createdAt) >= oneWeekAgo);
+  const previousWeekAttempts = attemptedQuiz.filter(attempt => new Date(attempt.quiz.createdAt) >= twoWeeksAgo && new Date(attempt.quiz.createdAt) < oneWeekAgo);
 
-      const attemptTimeMinutes =
-        (new Date(attempt.endedAt).getTime() -
-          new Date(attempt.startedAt).getTime()) /
-        (1000 * 60);
-      const attemptDate = new Date(attempt.startedAt);
+  const currentWeekMinutes = calculateTotalMinutes(currentWeekAttempts);
+  const previousWeekMinutes = calculateTotalMinutes(previousWeekAttempts);
 
-      if (attemptDate >= oneWeekAgo && attemptDate <= now) {
-        currentWeekMinutes += attemptTimeMinutes;
-      } else if (attemptDate >= twoWeeksAgo && attemptDate < oneWeekAgo) {
-        previousWeekMinutes += attemptTimeMinutes;
-      }
-    });
-  });
+  const timePercentageChange = previousWeekMinutes !== 0
+    ? ((currentWeekMinutes - previousWeekMinutes) / previousWeekMinutes) * 100
+    : 100;
 
-  // Round minutes to nearest whole number
-  currentWeekMinutes = Math.round(currentWeekMinutes);
-  previousWeekMinutes = Math.round(previousWeekMinutes);
-
-  // Format display time
   const formatTime = (minutes: number): string => {
-    if (minutes < 60) {
-      return `${minutes} min`;
-    } else if (minutes < 1440) {
-      // Less than 24 hours
-      const hours = Math.floor(minutes / 60);
-      const mins = minutes % 60;
-      return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
-    } else {
-      // Days and hours
-      const days = Math.floor(minutes / 1440);
-      const remainingHours = Math.floor((minutes % 1440) / 60);
-      return remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
-    }
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = Math.round(minutes % 60);
+    return `${hours}h ${remainingMinutes}m`;
   };
-
-  // Calculate percentage changes
-  const quizPercentageChange =
-    previousWeekQuizzes.length === 0
-      ? 100
-      : ((currentWeekQuizzes.length - previousWeekQuizzes.length) /
-          previousWeekQuizzes.length) *
-        100;
-
-  const timePercentageChange =
-    previousWeekMinutes === 0
-      ? 100
-      : ((currentWeekMinutes - previousWeekMinutes) / previousWeekMinutes) *
-        100;
 
   return {
     newQuizzes: {
