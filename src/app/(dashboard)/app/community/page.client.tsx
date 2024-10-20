@@ -1,12 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaStopwatch, FaUserCheck, FaRobot } from "react-icons/fa";
-import { LuBookOpen } from "react-icons/lu";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,21 +9,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
-import type { Quiz, User, QuizAttempt } from "@prisma/client";
-
-type QuizWithUser = Quiz & { createdBy: User };
-
-interface CommunityClientProps {
-  initialQuizzes: QuizWithUser[];
-  initialQuizAttemptsMap: Record<string, QuizAttempt[]>;
-}
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import React from "react";
+import { FaRobot, FaStopwatch, FaUserCheck } from "react-icons/fa";
+import { LuBookOpen } from "react-icons/lu";
+import { type CommunityClientProps } from "~/types/community";
 
 const getScoreColor = (score: number, total: number) => {
   if (score === total) return "bg-green-500";

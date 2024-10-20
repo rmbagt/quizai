@@ -2,15 +2,20 @@ import { headers } from "next/headers";
 
 import { getAllAttempts } from "@/service/attempts";
 import { QuizListClient } from "@/components/quiz/quiz-list";
+import { api } from "~/trpc/server";
+import { type Quiz } from "@prisma/client";
 
 export default async function QuizListServer() {
   const headerList = headers();
   const domain =
     headerList.get("x-forwarded-host") ??
     headerList.get("host") ??
-    "quiz-ai.rey.mba";
+    "quizai.rey.mba";
 
-  const { data, quizAttemptsMap } = await getAllAttempts();
+  const data = await api.quiz.getAllQuizzes();
+  const { quizData, quizAttemptsMap } = await getAllAttempts<Quiz>({
+    quizData: data,
+  });
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-secondary/20 px-4 py-14 sm:px-6 lg:px-8">
@@ -19,7 +24,7 @@ export default async function QuizListServer() {
           Your Quiz Collection
         </h1>
         <QuizListClient
-          initialQuizzes={data}
+          initialQuizzes={quizData}
           initialQuizAttemptsMap={quizAttemptsMap}
           domain={domain}
         />

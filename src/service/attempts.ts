@@ -1,28 +1,9 @@
 import { api } from "~/trpc/server";
 
-export type QuizAttempt = {
-  id: string;
-  quizId: string;
-  answers: unknown;
-  score: number | null;
-  userId: string;
-  startedAt: Date;
-  endedAt: Date | null;
-};
-
-export type QuizData = {
-  theme: string;
-  id: string;
-  createdById: string;
-  totalQuestions: number;
-  workingTime: number;
-};
-
-export async function getAllAttempts() {
-  const data = await api.quiz.getAllQuizzes();
+export async function getAllAttempts<T extends { id: string }>({ quizData }: { quizData: T[] }) {
   // Fetch attempts for all quizzes
   const allAttempts = await Promise.all(
-    data.map(async (quiz) => {
+    quizData.map(async (quiz) => {
       try {
         const attempts = await api.quiz.getUserQuizAttempts({
           quizId: quiz.id,
@@ -36,7 +17,7 @@ export async function getAllAttempts() {
   );
 
   // Create a map of quiz attempts
-  const quizAttemptsMap = data.reduce(
+  const quizAttemptsMap = quizData.reduce(
     (acc, quiz, index) => {
       acc[quiz.id] = allAttempts[index] ?? [];
       return acc;
@@ -47,15 +28,16 @@ export async function getAllAttempts() {
     >,
   );
 
-  return { data, quizAttemptsMap };
+  return { quizData, quizAttemptsMap };
 }
 
 export async function processAllQuizAttempts() {
-  const { data: quizzes, quizAttemptsMap } = await getAllAttempts();
+  const data = await api.quiz.getAllUserQuizAttempts();
+  const { quizData, quizAttemptsMap } = await getAllAttempts({ quizData: data });
   let totalCorrect = 0;
   let totalWrong = 0;
 
-  for (const quiz of quizzes) {
+  for (const quiz of quizData) {
     const quizData = await api.quiz.getQuiz({ id: quiz.id });
     if (!quizData || !quizData.questions) continue;
 

@@ -18,26 +18,29 @@ export default function CreateQuizPage() {
   const searchParams = useSearchParams();
   const utils = api.useUtils();
 
-  const { mutateAsync, isPending } = api.completions.generateQuiz.useMutation({
-    onSuccess: async () => {
-      await utils.invalidate();
-      toast.success("Quiz generated successfully");
-    },
-    onMutate: () => {
-      toast.info("Generating quiz...");
-    },
-  });
-  const { mutateAsync: createQuiz } = api.quiz.createQuiz.useMutation({
-    onSuccess: async () => {
-      await utils.invalidate();
-      toast.success("Quiz created successfully");
-      router.push("/app/quiz");
-      router.refresh();
-    },
-    onMutate: async () => {
-      toast.info("Creating quiz...");
-    },
-  });
+  const { mutateAsync, isPending: isPendingGenerate } =
+    api.completions.generateQuiz.useMutation({
+      onSuccess: async () => {
+        await utils.invalidate();
+        toast.success("Quiz generated successfully");
+      },
+      onMutate: () => {
+        toast.info("Generating quiz...");
+      },
+    });
+
+  const { mutateAsync: createQuiz, isPending: isPendingQuiz } =
+    api.quiz.createQuiz.useMutation({
+      onSuccess: async () => {
+        await utils.invalidate();
+        toast.success("Quiz created successfully");
+        router.push("/app/quiz");
+        router.refresh();
+      },
+      onMutate: async () => {
+        toast.info("Creating quiz...");
+      },
+    });
 
   const [prompt, setPrompt] = useState("");
   const [time, setTime] = useState("");
@@ -123,8 +126,8 @@ export default function CreateQuizPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center px-10 py-14 md:px-24">
-      <h1 className="mb-8 text-3xl font-bold sm:text-4xl">
-        What do you want to practice?
+      <h1 className="mb-8 text-center text-4xl font-extrabold tracking-tight text-primary sm:text-5xl">
+        What do you want to learn today?
       </h1>
       <Card className="w-full max-w-3xl">
         <CardHeader>
@@ -172,8 +175,8 @@ export default function CreateQuizPage() {
                 id="language"
               />
             </div>
-            <Button onClick={handleCreateQuiz} disabled={isPending}>
-              {isPending ? "Generating..." : "Create Quiz"}
+            <Button onClick={handleCreateQuiz} disabled={isPendingGenerate}>
+              {isPendingGenerate ? "Generating..." : "Create Quiz"}
             </Button>
           </div>
         </CardContent>
@@ -195,7 +198,9 @@ export default function CreateQuizPage() {
           ))}
           <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:justify-between">
             <Button onClick={addNewQuestion}>Add New Question</Button>
-            <Button onClick={handleSubmitQuiz}>Submit Quiz</Button>
+            <Button onClick={handleSubmitQuiz} disabled={isPendingQuiz}>
+              {isPendingQuiz ? "Submitting..." : "Submit Quiz"}
+            </Button>
           </div>
         </div>
       )}

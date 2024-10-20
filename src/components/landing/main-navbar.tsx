@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { SiGithub } from "react-icons/si";
 
-import { MainNav } from "./logo";
-import { Button } from "../ui/button";
-import { ModeToggle } from "../layout/mode-toggle";
-import { SignIn } from "./signin";
 import { getServerAuthSession } from "~/server/auth";
-import { HiSparkles } from "react-icons/hi2";
+import { ModeToggle } from "../layout/mode-toggle";
+import { Button } from "../ui/button";
+import { MainNav } from "./logo";
 import { MobileNav } from "./nav.client";
+import { SignIn } from "./signin";
 
 interface NavItem {
   title: string;

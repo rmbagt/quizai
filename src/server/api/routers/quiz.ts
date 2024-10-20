@@ -81,14 +81,13 @@ export const quizRouter = createTRPCRouter({
                 where: { id },
                 data: {
                     theme: theme ?? undefined,
-                    // Only update questions if provided
                     questions: questions
                         ? {
-                            deleteMany: {}, // Delete old questions first
+                            deleteMany: {},
                             create: questions.map((q) => ({
-                                question: q.question, // Ensure question is a string, no undefined
-                                choices: q.choices,  // Ensure choices is a string array, no undefined
-                                answer: q.answer,    // Ensure answer is a number, no undefined
+                                question: q.question,
+                                choices: q.choices,
+                                answer: q.answer,
                             })),
                         }
                         : undefined,
@@ -118,7 +117,7 @@ export const quizRouter = createTRPCRouter({
                 data: {
                     quiz: { connect: { id: input.quizId } },
                     user: { connect: { id: ctx.session.user.id } },
-                    answers: {}, // Start with empty answers
+                    answers: {},
                 },
             });
         }),
@@ -132,7 +131,6 @@ export const quizRouter = createTRPCRouter({
         .mutation(async ({ ctx, input }) => {
             const { quizAttemptId, answers } = input;
 
-            // Save the snapshot
             await ctx.db.quizSnapshot.create({
                 data: {
                     quizAttempt: { connect: { id: quizAttemptId } },
@@ -140,7 +138,6 @@ export const quizRouter = createTRPCRouter({
                 },
             });
 
-            // Update the QuizAttempt with the latest answers
             return ctx.db.quizAttempt.update({
                 where: { id: quizAttemptId },
                 data: { answers: answers },
@@ -179,4 +176,12 @@ export const quizRouter = createTRPCRouter({
                 orderBy: { startedAt: 'desc' },
             });
         }),
+
+    // Get all quiz attempts
+    getAllUserQuizAttempts: protectedProcedure.query(async ({ ctx }) => {
+        return ctx.db.quizAttempt.findMany({
+            where: { userId: ctx.session.user.id },
+            orderBy: { startedAt: 'desc' },
+        });
+    }),
 });

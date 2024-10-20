@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
 import { FlipWords } from "../ui/flip-words";
 
 export function RandomText() {
@@ -22,11 +21,10 @@ export function RandomText() {
 
   return (
     <>
-    
-    <h1 className="w-[800px] text-8xl font-black tracking-tighter text-white">
-      Helping your learning process 
-      <FlipWords words={arrayOfText} className="text-white" />
-    </h1>
+      <h1 className="w-[800px] text-8xl font-black tracking-tighter text-white">
+        Helping your learning process
+        <FlipWords words={arrayOfText} className="text-white" />
+      </h1>
     </>
   );
 }
