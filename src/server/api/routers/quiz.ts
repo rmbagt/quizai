@@ -53,6 +53,7 @@ export const quizRouter = createTRPCRouter({
     getAllQuizzes: protectedProcedure.query(async ({ ctx }) => {
         return ctx.db.quiz.findMany({
             where: { createdById: ctx.session.user.id }, // Restrict to user's own quizzes
+            orderBy: { createdAt: 'desc' },
         });
     }),
 

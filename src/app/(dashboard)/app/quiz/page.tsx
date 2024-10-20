@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
-import { QuizListClient } from "./quiz-list-client";
+
 import { getAllAttempts } from "@/service/attempts";
+import { QuizListClient } from "@/components/quiz/quiz-list";
 
 export default async function QuizListServer() {
   const headerList = headers();

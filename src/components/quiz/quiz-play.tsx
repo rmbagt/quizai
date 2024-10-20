@@ -38,7 +38,7 @@ export default function QuizPage({
 }) {
   const searchParams = useSearchParams();
   const isReviewMode = searchParams.get("mode") === "review";
-  const utils = api.useUtils();
+  const srcPath = searchParams.get("src");
   const router = useRouter();
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -123,10 +123,6 @@ export default function QuizPage({
     setIsQuizEnded(true);
     setModalContent(reason);
     setShowModal(true);
-    await utils.quiz.getUserQuizAttempts.invalidate();
-    await utils.quiz.getUserQuizAttempts.prefetch({
-      quizId: quizData?.id,
-    });
     if (quizData) {
       const userScore = userAnswers.reduce((acc, answer, index) => {
         return acc + (answer === quizData.questions[index]?.answer ? 1 : 0);
@@ -336,7 +332,7 @@ export default function QuizPage({
               <div className="flex items-center gap-4">
                 <ArrowLeft
                   onClick={() => {
-                    router.push("/app/quiz");
+                    router.push(srcPath ?? "/");
                     router.refresh();
                   }}
                   className="h-6 w-6 cursor-pointer"
