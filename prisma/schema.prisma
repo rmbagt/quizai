@@ -85,7 +85,9 @@ model Quiz {
     createdById        String
     attempts           QuizAttempt[]
     isVerifiedByExpert Boolean       @default(false)
-    isGeneratedByAI    Boolean       @default(false)
+    isGeneratedByAI    Boolean       @default(true)
+    isPublic           Boolean       @default(false)
+    createdAt          DateTime      @default(now())
 }
 
 model Question {
