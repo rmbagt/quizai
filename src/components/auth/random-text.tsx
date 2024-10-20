@@ -25,7 +25,7 @@ export function RandomText() {
     
     <h1 className="w-[800px] text-8xl font-black tracking-tighter text-white">
       Helping your learning process 
-      <FlipWords words={arrayOfText} />
+      <FlipWords words={arrayOfText} className="text-white" />
     </h1>
     </>
   );
