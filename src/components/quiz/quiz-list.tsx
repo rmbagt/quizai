@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { FaRobot, FaStopwatch, FaUserCheck } from "react-icons/fa";
 import { LuBookOpen } from "react-icons/lu";
 import Link from "next/link";
@@ -25,6 +25,9 @@ import { api } from "~/trpc/react";
 import { ShareButton } from "../../app/(dashboard)/app/quiz/page.client";
 import type { Quiz, QuizAttempt } from "@prisma/client";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Globe } from "lucide-react";
+import { set } from "zod";
 
 type QuizAttemptsMap = Record<string, QuizAttempt[]>;
 
@@ -43,6 +46,14 @@ export function QuizListClient({
   const [quizAttemptsMap, setQuizAttemptsMap] = React.useState<QuizAttemptsMap>(
     initialQuizAttemptsMap,
   );
+  const utils = api.useUtils();
+  const { data } = api.quiz.getAllQuizzes.useQuery();
+
+  useEffect(() => {
+    if (data) {
+      setQuizzes(data);
+    }
+  }, [data]);
 
   const { mutate } = api.quiz.deleteQuiz.useMutation({
     onMutate: ({ id: quizId }) => {
@@ -67,6 +78,28 @@ export function QuizListClient({
   });
 
   const handleDelete = (quizId: string) => mutate({ id: quizId });
+  const markAsAI = api.community.markQuizAsAIGenerated.useMutation({
+    onSuccess: ({ isGeneratedByAI }) => {
+      toast.success(
+        `Quiz ${isGeneratedByAI ? "marked" : "unmarked"} as AI Generated`,
+      );
+      utils.quiz.getAllQuizzes.invalidate();
+    },
+  });
+  const markAsVerified = api.community.verifyQuizByExpert.useMutation({
+    onSuccess: ({ isVerifiedByExpert }) => {
+      toast.success(
+        `Quiz ${isVerifiedByExpert ? "marked" : "unmarked"} as Verified by Expert`,
+      );
+      utils.quiz.getAllQuizzes.invalidate();
+    },
+  });
+  const setAsPublic = api.community.setQuizAsPublic.useMutation({
+    onSuccess: ({ isPublic }) => {
+      toast.success(`Quiz ${isPublic ? "marked" : "unmarked"} as Public`);
+      utils.quiz.getAllQuizzes.invalidate();
+    },
+  });
 
   if (quizzes.length === 0) {
     return (
@@ -127,6 +160,12 @@ export function QuizListClient({
                     >
                       <FaRobot className="h-3 w-3" />
                       AI Generated
+                    </Badge>
+                  )}
+                  {quiz.isPublic && (
+                    <Badge className="flex items-center gap-1">
+                      <Globe className="h-3 w-3" />
+                      Public
                     </Badge>
                   )}
                 </div>
@@ -201,15 +240,47 @@ export function QuizListClient({
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <span>Mark quiz as AI Generated</span>
+                    <DropdownMenuItem
+                      asChild
+                      onClick={() =>
+                        markAsAI.mutate({
+                          quizId: quiz.id,
+                          status: !quiz.isGeneratedByAI,
+                        })
+                      }
+                    >
+                      <span>
+                        {quiz.isGeneratedByAI ? "Unmark" : "Mark"} quiz as AI
+                        Generated
+                      </span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <span>Mark quiz as Verified by Expert</span>
+                    <DropdownMenuItem
+                      asChild
+                      onClick={() =>
+                        markAsVerified.mutate({
+                          quizId: quiz.id,
+                          status: !quiz.isVerifiedByExpert,
+                        })
+                      }
+                    >
+                      <span>
+                        {quiz.isVerifiedByExpert ? "Unmark" : "Mark"} quiz as
+                        Verified by Expert
+                      </span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuItem
+                      asChild
+                      onClick={() =>
+                        setAsPublic.mutate({
+                          quizId: quiz.id,
+                          status: !quiz.isPublic,
+                        })
+                      }
+                    >
                       <div className="flex flex-col items-start gap-0 text-left">
-                        <span className="w-full">Mark quiz as Public</span>
+                        <span className="w-full">
+                          {quiz.isPublic ? "Unmark" : "Mark"} quiz as Public
+                        </span>
                         <span className="w-full text-xs text-muted-foreground">
                           (Available other to access)
                         </span>

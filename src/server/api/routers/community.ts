@@ -1,3 +1,4 @@
+import { stat } from "fs";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
@@ -23,12 +24,13 @@ export const communityRouter = createTRPCRouter({
         .input(
             z.object({
                 quizId: z.string(),
+                status: z.boolean(),
             })
         )
         .mutation(async ({ ctx, input }) => {
             return ctx.db.quiz.update({
                 where: { id: input.quizId },
-                data: { isVerifiedByExpert: true },
+                data: { isVerifiedByExpert: input.status },
             });
         }),
 
@@ -37,12 +39,13 @@ export const communityRouter = createTRPCRouter({
         .input(
             z.object({
                 quizId: z.string(),
+                status: z.boolean(),
             })
         )
         .mutation(async ({ ctx, input }) => {
             return ctx.db.quiz.update({
                 where: { id: input.quizId },
-                data: { isGeneratedByAI: true },
+                data: { isGeneratedByAI: input.status },
             });
         }),
 
@@ -51,12 +54,13 @@ export const communityRouter = createTRPCRouter({
         .input(
             z.object({
                 quizId: z.string(),
+                status: z.boolean(),
             })
         )
         .mutation(async ({ ctx, input }) => {
             return ctx.db.quiz.update({
                 where: { id: input.quizId },
-                data: { isPublic: true },
+                data: { isPublic: input.status },
             });
         }),
 });
