@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { FaStopwatch } from "react-icons/fa";
+import { FaRobot, FaStopwatch, FaUserCheck } from "react-icons/fa";
 import { LuBookOpen } from "react-icons/lu";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -99,15 +99,36 @@ export function QuizListClient({
                 <CardTitle className="line-clamp-2">{quiz.theme}</CardTitle>
               </CardHeader>
               <CardContent className="flex-grow">
-                <div className="mb-4 flex flex-col gap-2 text-sm">
+                <div className="mb-4 flex flex-wrap gap-2 text-sm">
                   <div className="flex items-center gap-2">
-                    <FaStopwatch className="text-primary" aria-hidden="true" />
+                    <FaStopwatch
+                      className="text-yellow-400"
+                      aria-hidden="true"
+                    />
                     <p>{quiz.totalQuestions} questions</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <LuBookOpen className="text-primary" aria-hidden="true" />
+                    <LuBookOpen className="text-green-500" aria-hidden="true" />
                     <p>{quiz.workingTime} minutes</p>
                   </div>
+                  {quiz.isVerifiedByExpert && (
+                    <Badge
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
+                      <FaUserCheck className="h-3 w-3" />
+                      Expert Verified
+                    </Badge>
+                  )}
+                  {quiz.isGeneratedByAI && (
+                    <Badge
+                      variant="outline"
+                      className="flex items-center gap-1"
+                    >
+                      <FaRobot className="h-3 w-3" />
+                      AI Generated
+                    </Badge>
+                  )}
                 </div>
                 <motion.div
                   className="mt-4 border-t pt-4"
@@ -168,12 +189,31 @@ export function QuizListClient({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
-                      <Link href={`/app/quiz/${quiz.id}`}>Start Quiz</Link>
+                      <Link href={`/app/quiz/${quiz.id}?src=/app/quiz`}>
+                        Start Quiz
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href={`/app/quiz/${quiz.id}?mode=review`}>
+                      <Link
+                        href={`/app/quiz/${quiz.id}?mode=review&src=/app/quiz`}
+                      >
                         Review
                       </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <span>Mark quiz as AI Generated</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <span>Mark quiz as Verified by Expert</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <div className="flex flex-col items-start gap-0 text-left">
+                        <span className="w-full">Mark quiz as Public</span>
+                        <span className="w-full text-xs text-muted-foreground">
+                          (Available other to access)
+                        </span>
+                      </div>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

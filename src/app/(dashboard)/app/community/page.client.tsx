@@ -38,12 +38,9 @@ const getScoreColor = (score: number, total: number) => {
 
 export function CommunityClient({
   initialQuizzes,
-  initialQuizAttemptsMap,
+  initialQuizAttemptsMap: quizAttemptsMap,
 }: CommunityClientProps) {
   const [quizzes, setQuizzes] = React.useState(initialQuizzes);
-  const [quizAttemptsMap, setQuizAttemptsMap] = React.useState(
-    initialQuizAttemptsMap,
-  );
   const [filters, setFilters] = React.useState({
     verifiedByExpert: false,
     generatedByAI: false,
@@ -148,7 +145,23 @@ export function CommunityClient({
                 <Card className="group flex h-full flex-col overflow-hidden transition-all duration-300 hover:shadow-lg">
                   <CardHeader>
                     <CardTitle className="line-clamp-2">{quiz.theme}</CardTitle>
-                    <div className="flex flex-wrap gap-2">
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <div className="mb-4 flex flex-wrap gap-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <FaStopwatch
+                          className="text-yellow-400"
+                          aria-hidden="true"
+                        />
+                        <p>{quiz.totalQuestions} questions</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <LuBookOpen
+                          className="text-green-500"
+                          aria-hidden="true"
+                        />
+                        <p>{quiz.workingTime} minutes</p>
+                      </div>
                       {quiz.isVerifiedByExpert && (
                         <Badge
                           variant="secondary"
@@ -167,24 +180,6 @@ export function CommunityClient({
                           AI Generated
                         </Badge>
                       )}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <div className="mb-4 flex flex-col gap-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <FaStopwatch
-                          className="text-primary"
-                          aria-hidden="true"
-                        />
-                        <p>{quiz.totalQuestions} questions</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <LuBookOpen
-                          className="text-primary"
-                          aria-hidden="true"
-                        />
-                        <p>{quiz.workingTime} minutes</p>
-                      </div>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       Created by: {quiz.createdBy.name}
@@ -243,10 +238,16 @@ export function CommunityClient({
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <Link href={`/app/quiz/${quiz.id}`}>Start Quiz</Link>
+                          <Link
+                            href={`/app/quiz/${quiz.id}?src=/app/community`}
+                          >
+                            Start Quiz
+                          </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/app/quiz/${quiz.id}?mode=review`}>
+                          <Link
+                            href={`/app/quiz/${quiz.id}?mode=review&src=/app/community`}
+                          >
                             Review
                           </Link>
                         </DropdownMenuItem>

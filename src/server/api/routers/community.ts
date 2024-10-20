@@ -45,4 +45,18 @@ export const communityRouter = createTRPCRouter({
                 data: { isGeneratedByAI: true },
             });
         }),
+
+    // Set a quiz as public
+    setQuizAsPublic: protectedProcedure
+        .input(
+            z.object({
+                quizId: z.string(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            return ctx.db.quiz.update({
+                where: { id: input.quizId },
+                data: { isPublic: true },
+            });
+        }),
 });
