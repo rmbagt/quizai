@@ -123,9 +123,3 @@ OPEN_API_KEY=
 - **Community Sharing:** Membagikan kuis yang telah dibuat kepada komunitas.
 - **Login Integration:** Masuk dengan mudah menggunakan Google atau Discord.
 - **Statistical Overview:** Dashboard dengan statistik dan pelaporan kinerja.
-
-## Contributors
-
-<a href="https://github.com/reynaldomarchell/srifoton-hack/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=reynaldomarchell/srifoton-hack"/>
-</a>
