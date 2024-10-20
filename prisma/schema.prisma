@@ -76,14 +76,18 @@ model VerificationToken {
 }
 
 model Quiz {
-    id             String        @id @default(cuid())
-    theme          String
-    totalQuestions Int
-    workingTime    Int
-    questions      Question[]
-    createdBy      User          @relation(fields: [createdById], references: [id])
-    createdById    String
-    attempts       QuizAttempt[]
+    id                 String        @id @default(cuid())
+    theme              String
+    totalQuestions     Int
+    workingTime        Int
+    questions          Question[]
+    createdBy          User          @relation(fields: [createdById], references: [id])
+    createdById        String
+    attempts           QuizAttempt[]
+    isVerifiedByExpert Boolean       @default(false)
+    isGeneratedByAI    Boolean       @default(true)
+    isPublic           Boolean       @default(false)
+    createdAt          DateTime      @default(now())
 }
 
 model Question {

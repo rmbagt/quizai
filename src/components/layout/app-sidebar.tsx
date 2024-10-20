@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CirclePlus, Home, Save } from "lucide-react";
+import { CirclePlus, Home, Save, Users } from "lucide-react";
 import { NavMain } from "~/components/layout/nav-main";
 import { NavUser } from "~/components/layout/nav-user";
 
@@ -37,6 +37,12 @@ const data = {
       title: "Saved Quiz",
       url: "/app/quiz",
       icon: Save,
+      isActive: true,
+    },
+    {
+      title: "Community Quiz",
+      url: "/app/community",
+      icon: Users,
       isActive: true,
     },
   ],

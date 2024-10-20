@@ -1,14 +1,8 @@
 import { api } from "~/trpc/server";
-import { headers } from "next/headers";
-import { QuizListClient } from "@/components/quiz/quiz-list";
+import { CommunityClient } from "./page.client";
 
-export default async function QuizListServer() {
-  const data = await api.quiz.getAllQuizzes();
-  const headerList = headers();
-  const domain =
-    headerList.get("x-forwarded-host") ??
-    headerList.get("host") ??
-    "quiz-ai.rey.mba";
+export default async function Community() {
+  const data = await api.community.getCommunityQuizzes();
 
   // Fetch attempts for all quizzes
   const allAttempts = await Promise.all(
@@ -37,18 +31,15 @@ export default async function QuizListServer() {
     >,
   );
 
-  console.log(quizAttemptsMap);
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-secondary/20 px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <h1 className="mb-8 text-center text-4xl font-extrabold tracking-tight text-primary sm:text-5xl">
-          Your Quiz Collection
+          Community Quizzes
         </h1>
-        <QuizListClient
+        <CommunityClient
           initialQuizzes={data}
           initialQuizAttemptsMap={quizAttemptsMap}
-          domain={domain}
         />
       </div>
     </main>
