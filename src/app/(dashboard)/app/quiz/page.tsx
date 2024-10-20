@@ -1,20 +1,8 @@
-import React from "react";
 import { api } from "~/trpc/server";
-import { FaStopwatch } from "react-icons/fa";
-import { LuBookOpen } from "react-icons/lu";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { DeleteButton, ShareButton } from "./page.client";
 import { headers } from "next/headers";
+import { QuizListClient } from "./quiz-list-client";
 
-export default async function Component() {
+export default async function QuizListServer() {
   const data = await api.quiz.getAllQuizzes();
   const headerList = headers();
   const domain =
@@ -22,67 +10,46 @@ export default async function Component() {
     headerList.get("host") ??
     "quiz-ai.rey.mba";
 
+  // Fetch attempts for all quizzes
+  const allAttempts = await Promise.all(
+    data.map(async (quiz) => {
+      try {
+        const attempts = await api.quiz.getUserQuizAttempts({
+          quizId: quiz.id,
+        });
+        return attempts.filter((attempt) => attempt.endedAt !== null);
+      } catch (error) {
+        console.error(`Error fetching attempts for quiz ${quiz.id}:`, error);
+        return []; // Return an empty array if there's an error
+      }
+    }),
+  );
+
+  // Create a map of quiz attempts
+  const quizAttemptsMap = data.reduce(
+    (acc, quiz, index) => {
+      acc[quiz.id] = allAttempts[index] ?? [];
+      return acc;
+    },
+    {} as Record<
+      string,
+      Awaited<ReturnType<typeof api.quiz.getUserQuizAttempts>>
+    >,
+  );
+
+  console.log(quizAttemptsMap);
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-secondary/20 px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <h1 className="mb-8 text-center text-4xl font-extrabold tracking-tight text-primary sm:text-5xl">
-          Saved Quizzes
+          Your Quiz Collection
         </h1>
-        {data.length === 0 ? (
-          <div className="flex items-center justify-center text-lg text-muted-foreground">
-            No quizzes found, please create one.
-          </div>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {data.map((quiz) => (
-              <Card
-                key={quiz.id}
-                className="group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg"
-              >
-                <CardHeader>
-                  <CardTitle className="line-clamp-2">{quiz.theme}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <div className="mb-4 flex flex-col gap-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <FaStopwatch className="text-primary" />
-                      <p>{quiz.totalQuestions} questions</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <LuBookOpen className="text-primary" />
-                      <p>{quiz.workingTime} minutes</p>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex flex-wrap gap-2">
-                  <Link
-                    href={`/app/quiz/${quiz.id}`}
-                    className="min-w-[calc(50%-0.25rem)] flex-1"
-                  >
-                    <Button className="w-full transition-transform duration-300 ease-in-out hover:scale-105">
-                      Start Quiz
-                    </Button>
-                  </Link>
-                  <Link
-                    href={`/app/quiz/${quiz.id}?mode=review`}
-                    className="min-w-[calc(50%-0.25rem)] flex-1"
-                  >
-                    <Button
-                      variant="outline"
-                      className="w-full transition-transform duration-300 ease-in-out hover:scale-105"
-                    >
-                      Review
-                    </Button>
-                  </Link>
-                  <div className="mt-2 flex w-full gap-2">
-                    <ShareButton quiz={quiz} domain={domain} />
-                    <DeleteButton quiz={quiz} />
-                  </div>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        )}
+        <QuizListClient
+          initialQuizzes={data}
+          initialQuizAttemptsMap={quizAttemptsMap}
+          domain={domain}
+        />
       </div>
     </main>
   );

@@ -55,15 +55,16 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String        @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?       @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
     Quiz          Quiz[]
+    QuizAttempt   QuizAttempt[]
 }
 
 model VerificationToken {
@@ -75,13 +76,14 @@ model VerificationToken {
 }
 
 model Quiz {
-    id             String     @id @default(cuid())
+    id             String        @id @default(cuid())
     theme          String
     totalQuestions Int
     workingTime    Int
     questions      Question[]
-    createdBy      User       @relation(fields: [createdById], references: [id])
+    createdBy      User          @relation(fields: [createdById], references: [id])
     createdById    String
+    attempts       QuizAttempt[]
 }
 
 model Question {
@@ -91,4 +93,25 @@ model Question {
     answer   Int
     quiz     Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
     quizId   String
+}
+
+model QuizAttempt {
+    id        String         @id @default(cuid())
+    quiz      Quiz           @relation(fields: [quizId], references: [id], onDelete: Cascade)
+    quizId    String
+    user      User           @relation(fields: [userId], references: [id])
+    userId    String
+    answers   Json
+    score     Int?
+    startedAt DateTime       @default(now())
+    endedAt   DateTime?
+    snapshots QuizSnapshot[]
+}
+
+model QuizSnapshot {
+    id            String      @id @default(cuid())
+    quizAttempt   QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+    quizAttemptId String
+    answers       Json
+    timestamp     DateTime    @default(now())
 }
