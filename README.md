@@ -35,15 +35,15 @@ QuizAI adalah aplikasi kuis berbasis AI yang dirancang untuk membuat proses bela
 
 2. **Install Dependencies:**
 
-   Gunakan package manager pilihan Anda:
+   Gunakan package manager pilihan Anda (prefferably bun):
 
    - Menggunakan npm:
 
      ```bash
-     npm install
+     npm install --legacy-peer-deps
      ```
 
-   - Menggunakan bun (jika tersedia):
+   - Menggunakan bun ([Bun](https://bun.sh/)):
      ```bash
      bun install
      ```
