@@ -1,29 +1,131 @@
-# Create T3 App
+# QuizAI
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+QuizAI adalah aplikasi kuis berbasis AI yang dirancang untuk membuat proses belajar menjadi lebih menyenangkan, menantang, otomatis, personalisasi, dan dapat disesuaikan. Aplikasi ini bertujuan untuk meningkatkan minat belajar masyarakat Indonesia dan dunia.
 
-## What's next? How do I make an app with this?
+### Live Website
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+[QuizAI Live](https://quizai.jer.ee/)
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+---
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Table of Contents
 
-## Learn More
+1. [Installation](#installation)
+2. [Environment Setup](#environment-setup)
+3. [Usage](#usage)
+4. [Features](#features)
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+---
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## Installation
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Prerequisites
 
-## How do I deploy this?
+- Node.js dan npm sudah terinstall di sistem Anda.
+- Mengerti cara menggunakan terminal atau command prompt.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+### Steps
+
+1. **Clone Repository:**
+
+   ```bash
+   git clone https://github.com/reynaldomarchell/srifoton-hack.git
+   cd srifoton-hack
+   ```
+
+2. **Install Dependencies:**
+
+   Gunakan package manager pilihan Anda:
+
+   - Menggunakan npm:
+
+     ```bash
+     npm install
+     ```
+
+   - Menggunakan bun (jika tersedia):
+     ```bash
+     bun install
+     ```
+
+3. **Setup Database dengan Prisma:**
+
+   Lakukan migrasi database menggunakan Prisma:
+
+   ```bash
+   npx prisma db push
+   ```
+
+4. **Start Development Server:**
+
+   Jalankan server pengembangan:
+
+   ```bash
+   npm run dev
+   ```
+
+5. **Access Application:**
+
+   Buka URL berikut di browser: [http://localhost:3000/](http://localhost:3000/)
+
+## Environment Setup
+
+Pastikan Anda memiliki file `.env` yang benar dengan variabel yang dibutuhkan. Jika belum ada, buat dan isi sesuai dengan kebutuhan aplikasi, contohnya:
+
+```
+DATABASE_URL="postgresql://postgres:password@localhost:5432/srifoton-hack"
+NEXTAUTH_URL="http://localhost:3000"
+
+DISCORD_CLIENT_ID=
+DISCORD_CLIENT_SECRET=
+
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+
+OPEN_API_KEY=
+```
+
+## Usage
+
+1. **Landing Page:**
+
+   Setelah membuka aplikasi, Anda akan diarahkan ke halaman utama yang menjelaskan sedikit tentang aplikasi ini.
+
+2. **Login:**
+
+   Untuk menyimpan data kuis pribadi, login diperlukan. Anda bisa melakukan login menggunakan akun Google atau Discord.
+
+3. **Dashboard/Home:**
+
+   Berisi statistik laporan dan tombol "Create Quiz" untuk membuat kuis baru menggunakan AI.
+
+4. **Create Quiz:**
+
+   - Akses melalui Sidebar --> Quiz.
+   - Masukkan detail tentang kuis yang akan dibuat, kemudian klik "Create Quiz".
+   - Anda bisa mengedit pertanyaan dan jawaban, menambah pertanyaan baru, dan memposting kuis.
+
+5. **Saved Quiz:**
+
+   - Akses melalui Sidebar --> Quiz.
+   - Berisi semua kuis yang sudah Anda buat.
+   - Dapat dibagikan, dimainkan, atau di-review.
+
+6. **Community Quiz:**
+
+   - Akses melalui Sidebar --> Community Quiz.
+   - Berisi kuis yang dibuat oleh pengguna lain di komunitas, bisa difilter dan dimainkan.
+
+## Features
+
+- **Customizable Quizzes:** Membuat kuis yang bisa disesuaikan dengan keinginan.
+- **Automated Quiz Creation:** AI yang membantu dalam pembuatan kuis.
+- **Community Sharing:** Membagikan kuis yang telah dibuat kepada komunitas.
+- **Login Integration:** Masuk dengan mudah menggunakan Google atau Discord.
+- **Statistical Overview:** Dashboard dengan statistik dan pelaporan kinerja.
+
+## Contributors
+
+<a href="https://github.com/reynaldomarchell/srifoton-hack/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=reynaldomarchell/srifoton-hack"/>
+</a>
