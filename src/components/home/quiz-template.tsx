@@ -50,7 +50,7 @@ export function QuizTemplate() {
             </p>
           </div>
           <Link
-            href={`/app/create?prompt=${quiz.title}&time=${10}&question=${10}`}
+            href={`/app/create?prompt=${quiz.title}&time=${quiz.time}&question=${quiz.totalQuestions}`}
           >
             <Button>Create Quiz</Button>
           </Link>
