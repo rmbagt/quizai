@@ -1,6 +1,6 @@
 import { api } from "~/trpc/server";
 import { headers } from "next/headers";
-import { QuizListClient } from "./quiz-list-client";
+import { QuizListClient } from "@/components/quiz/quiz-list";
 
 export default async function QuizListServer() {
   const data = await api.quiz.getAllQuizzes();

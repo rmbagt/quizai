@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "~/trpc/react";
-import { ShareButton } from "./page.client";
+import { ShareButton } from "../../app/(dashboard)/app/quiz/page.client";
 import type { Quiz, QuizAttempt } from "@prisma/client";
 import { toast } from "sonner";
 
