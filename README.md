@@ -127,5 +127,5 @@ OPEN_API_KEY=
 ## Contributors
 
 <a href="https://github.com/reynaldomarchell/srifoton-hack/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=reynaldomarchell/srifoton-hack"/>
+    <img src="https://contrib.rocks/image?repo=reynaldomarchell/srifoton-hac"/>
 </a>
