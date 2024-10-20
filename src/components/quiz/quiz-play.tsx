@@ -25,6 +25,7 @@ import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import type { Question, Quiz } from "@prisma/client";
 import { cn } from "~/lib/utils";
+import { api } from "~/trpc/react";
 
 export default function QuizPage({
   quizData,
@@ -50,6 +51,35 @@ export default function QuizPage({
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [score, setScore] = useState(0);
   const resultRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [quizAttemptId, setQuizAttemptId] = useState<string | null>(null);
+
+  const startQuizAttempt = api.quiz.startQuizAttempt.useMutation();
+  const saveQuizSnapshot = api.quiz.saveQuizSnapshot.useMutation();
+  const endQuizAttempt = api.quiz.endQuizAttempt.useMutation();
+
+  useEffect(() => {
+    if (quizData && !isReviewMode) {
+      startQuizAttempt.mutate(
+        { quizId: quizData.id },
+        {
+          onSuccess: (data) => setQuizAttemptId(data.id),
+        },
+      );
+    }
+  }, [quizData, isReviewMode]);
+
+  useEffect(() => {
+    if (!isQuizEnded && quizAttemptId) {
+      const saveInterval = setInterval(() => {
+        saveQuizSnapshot.mutate({
+          quizAttemptId,
+          answers: Object.fromEntries(userAnswers.entries()),
+        });
+      }, 5 * 1000); // Save every 30 seconds
+
+      return () => clearInterval(saveInterval);
+    }
+  }, [isQuizEnded, quizAttemptId, userAnswers]);
 
   useEffect(() => {
     if (quizData) {
@@ -96,6 +126,14 @@ export default function QuizPage({
         return acc + (answer === quizData.questions[index]?.answer ? 1 : 0);
       }, 0);
       setScore(userScore);
+
+      if (quizAttemptId) {
+        endQuizAttempt.mutate({
+          quizAttemptId,
+          answers: Object.fromEntries(userAnswers.entries()),
+          score: userScore, // Use the calculated userScore here
+        });
+      }
     }
   };
 

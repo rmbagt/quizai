@@ -108,4 +108,78 @@ export const quizRouter = createTRPCRouter({
             });
             return { success: true };
         }),
+
+    // Start a new quiz attempt
+    startQuizAttempt: protectedProcedure
+        .input(z.object({ quizId: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            return ctx.db.quizAttempt.create({
+                data: {
+                    quiz: { connect: { id: input.quizId } },
+                    user: { connect: { id: ctx.session.user.id } },
+                    answers: {}, // Start with empty answers
+                },
+            });
+        }),
+
+    // Save quiz answers periodically
+    saveQuizSnapshot: protectedProcedure
+        .input(z.object({
+            quizAttemptId: z.string(),
+            answers: z.record(z.number()),
+        }))
+        .mutation(async ({ ctx, input }) => {
+            const { quizAttemptId, answers } = input;
+
+            // Save the snapshot
+            await ctx.db.quizSnapshot.create({
+                data: {
+                    quizAttempt: { connect: { id: quizAttemptId } },
+                    answers: answers,
+                },
+            });
+
+            // Update the QuizAttempt with the latest answers
+            return ctx.db.quizAttempt.update({
+                where: { id: quizAttemptId },
+                data: { answers: answers },
+            });
+        }),
+
+    // End quiz attempt
+    endQuizAttempt: protectedProcedure
+        .input(z.object({
+            quizAttemptId: z.string(),
+            answers: z.record(z.number()),
+            score: z.number(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+            const { quizAttemptId, answers, score } = input;
+
+            return ctx.db.quizAttempt.update({
+                where: { id: quizAttemptId },
+                data: {
+                    answers: answers,
+                    score: score,
+                    endedAt: new Date(),
+                },
+            });
+        }),
+
+    // Get quiz attempts for a user
+    getUserQuizAttempts: protectedProcedure
+        .input(z.object({ quizId: z.string().optional() }))
+        .query(async ({ ctx, input }) => {
+            return ctx.db.quizAttempt.findMany({
+                where: {
+                    userId: ctx.session.user.id,
+                    quizId: input.quizId,
+                },
+                include: {
+                    quiz: true,
+                    snapshots: true,
+                },
+                orderBy: { startedAt: 'desc' },
+            });
+        }),
 });
