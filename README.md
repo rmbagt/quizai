@@ -1,5 +1,6 @@
-# QuizAI
+# QuizAI ✨
 
+![QuizAI](public/quizai.png)
 QuizAI adalah aplikasi kuis berbasis AI yang dirancang untuk membuat proses belajar menjadi lebih menyenangkan, menantang, otomatis, personalisasi, dan dapat disesuaikan. Aplikasi ini bertujuan untuk meningkatkan minat belajar masyarakat Indonesia dan dunia.
 
 ### Live Website
