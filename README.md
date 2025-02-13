@@ -4,7 +4,7 @@ QuizAI adalah aplikasi kuis berbasis AI yang dirancang untuk membuat proses bela
 
 ### Live Website
 
-[QuizAI Live](https://quizai.jer.ee/)
+[QuizAI Live](https://quizai.rey.mba/)
 
 ---
 
@@ -29,7 +29,7 @@ QuizAI adalah aplikasi kuis berbasis AI yang dirancang untuk membuat proses bela
 1. **Clone Repository:**
 
    ```bash
-   git clone https://github.com/reynaldomarchell/srifoton-hack.git
+   git clone https://github.com/rmbagt/quizai.git
    cd srifoton-hack
    ```
 

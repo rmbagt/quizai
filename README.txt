@@ -3,14 +3,14 @@ Tujuan: Membuat quiz app powered by AI untuk membuat proses belajar yang jauh le
 
 Dengan harapan: membuat masyarakat Indonesia dan dunia yang lebih senang dan excited untuk belajar.
 
-Link website live: https://quizai.jer.ee/
+Link website live: https://quizai.rey.mba/
 
 ----------------------------------------------------
 
 0) Installation Steps:
 
 1. Unzip source folder
-2. Open the 'srifoton-hack' folder
+2. Open the 'quizai' folder
 3. Open terminal atau cmd atau semacamnya
 4. Ketik 'npm install' atau 'bun install' (tergantung package manager yang dimiliki).
 5. Setelah selesai dependencies nya ter-install semua. Ketik 'npm run dev' atau 'bun dev' di terminal.
