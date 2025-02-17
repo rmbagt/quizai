@@ -24,7 +24,7 @@ const config = {
       }
     ],
     "@typescript-eslint/no-unused-vars": [
-      "warn",
+      "off",
       {
         "argsIgnorePattern": "^_"
       }
@@ -37,7 +37,8 @@ const config = {
           "attributes": false
         }
       }
-    ]
+    ],
+    "@typescript-eslint/consistent-indexed-object-style": "off",
   }
 }
 module.exports = config;
